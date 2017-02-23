@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.MinePackageDao">
+    <resultMap id="minePackage" type="com.liangxunwang.unimanager.model.MinePackage">
+        <id column="package_id" property="package_id"/>
+        <result column="package_money" property="package_money"/>
+        <result column="emp_id" property="emp_id"/>
+    </resultMap>
+
+    <!--<select id="lists" resultMap="minePackage">-->
+        <!--SELECT * from lx_package-->
+        <!--WHERE 1=1-->
+        <!--<if test="emp_id != null and emp_id != ''">-->
+            <!--AND emp_id = #{emp_id}-->
+        <!--</if>-->
+    <!--</select>-->
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.MinePackage">
+        INSERT INTO lx_package(package_id, package_money, emp_id)
+        VALUES (#{package_id}, #{package_money}, #{emp_id})
+    </insert>
+
+    <delete id="delete" parameterType="String">
+        DELETE FROM lx_package where emp_id = #{emp_id}
+    </delete>
+
+    <select id="findById" parameterType="String" resultMap="minePackage">
+        SELECT * FROM lx_package where emp_id=#{emp_id}
+    </select>
+
+    <!--<update id="update" parameterType="com.liangxunwang.unimanager.model.MinePackage">-->
+        <!--UPDATE lx_package SET package_money=#{package_money}-->
+         <!--WHERE emp_id=#{emp_id}-->
+    <!--</update>-->
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.MinePackage">
+        UPDATE lx_package set package_money=(package_money + ${package_money}) WHERE emp_id=#{emp_id}
+    </update>
+
+    <update id="updateDel" parameterType="com.liangxunwang.unimanager.model.MinePackage">
+        UPDATE lx_package set package_money=(package_money - ${package_money}) WHERE emp_id=#{emp_id}
+    </update>
+</mapper>

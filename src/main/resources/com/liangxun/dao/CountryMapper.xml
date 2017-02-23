@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.AppAreaDao">
+    <resultMap id="country" type="com.liangxunwang.unimanager.model.Area">
+        <id column="aid" property="aid"/>
+        <result column="areaid" property="areaid"/>
+        <result column="areaName" property="areaName"/>
+        <result column="cityid" property="cityid"/>
+    </resultMap>
+
+    <select id="list" resultMap="country">
+        SELECT sn.* from area sn WHERE 1=1
+        <if test="cityid != null and cityid != ''">
+            AND sn.cityid = #{cityid}
+        </if>
+    </select>
+
+
+</mapper>

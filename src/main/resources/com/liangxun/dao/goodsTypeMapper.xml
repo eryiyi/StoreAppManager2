@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.GoodsTypeDao">
+    <resultMap id="my_goods_type" type="com.liangxunwang.unimanager.model.GoodsType">
+        <id column="type_id" property="typeId"/>
+        <result column="type_name" property="typeName"/>
+        <result column="type_cont" property="typeContent"/>
+        <result column="type_isuse" property="typeIsUse"/>
+        <result column="type_cover" property="typeCover"/>
+        <result column="type_num" property="type_num"/>
+        <result column="is_type" property="is_type"/>
+        <result column="is_hot" property="is_hot"/>
+        <result column="is_index" property="is_index"/>
+    </resultMap>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.GoodsType">
+        INSERT INTO lx_goods_type(type_id, type_name, type_cont, type_isuse, type_cover,type_num ,is_type, is_index)
+         VALUES (#{typeId}, #{typeName}, #{typeContent, jdbcType=VARCHAR}, #{typeIsUse}, #{typeCover, jdbcType=VARCHAR}, #{type_num}, #{is_type}, #{is_index})
+    </insert>
+
+    <select id="list" resultMap="my_goods_type">
+        SELECT sn.* FROM lx_goods_type sn
+        WHERE 1=1
+        <if test="isUse != null and isUse != ''">
+            AND sn.type_isuse=#{isUse}
+        </if>
+        <if test="is_type != null and is_type != ''">
+            AND sn.is_type=#{is_type}
+        </if>
+        <if test="type_id != null and type_id != ''">
+            AND sn.type_id=#{type_id}
+        </if>
+        <if test="is_hot != null and is_hot != ''">
+            AND sn.is_hot=#{is_hot}
+        </if>
+        <if test="is_index != null and is_index != ''">
+            AND sn.is_index=#{is_index}
+        </if>
+        ORDER by sn.type_num DESC
+    </select>
+
+    <select id="findById" parameterType="String" resultMap="my_goods_type">
+        SELECT * FROM lx_goods_type where type_id=#{typeId}
+    </select>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.GoodsType">
+        UPDATE lx_goods_type SET type_name=#{typeName}, type_cont=#{typeContent, jdbcType=VARCHAR},
+         type_isuse=#{typeIsUse}, type_cover=#{typeCover} , type_num=#{type_num}, is_type=#{is_type}, is_index=#{is_index}  WHERE type_id=#{typeId}
+    </update>
+
+    <update id="updateReMen" parameterType="com.liangxunwang.unimanager.model.GoodsType">
+        UPDATE lx_goods_type SET is_hot=#{is_hot} WHERE type_id=#{typeId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM lx_goods_type WHERE type_id=#{typeId}
+    </delete>
+</mapper>

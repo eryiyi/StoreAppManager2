@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.GoodsCommentDao">
+    <resultMap id="my_goods_comment" type="com.liangxunwang.unimanager.model.GoodsComment">
+        <id column="comment_id" property="id"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="comment_cont" property="content"/>
+        <result column="comment_fplid" property="fplid"/>
+        <result column="comment_emp_id" property="empId"/>
+        <result column="dateline" property="dateline"/>
+        <result column="f_emp_id" property="fempId"/>
+        <result column="goodsEmpId" property="goodsEmpId"/>
+        <result column="nick_name" property="nickName"/>
+        <result column="cover" property="cover"/>
+        <result column="f_nick_name" property="fNickName"/>
+        <result column="starNumber" property="starNumber"/>
+        <result column="goods_name" property="goods_name"/>
+        <result column="is_del" property="is_del"/>
+    </resultMap>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.GoodsComment">
+        INSERT INTO goods_comment(comment_id, goods_id, comment_cont, comment_fplid, comment_pic, goods_emp_id, comment_emp_id, dateline,starNumber)
+        VALUES (#{id}, #{goodsId}, #{content,jdbcType=VARCHAR}, #{fplid,jdbcType=VARCHAR}, #{comment_pic,jdbcType=VARCHAR} , #{goodsEmpId,jdbcType=VARCHAR} , #{empId}, #{dateline}, #{starNumber,jdbcType=VARCHAR})
+    </insert>
+
+    <select id="list" resultMap="my_goods_comment">
+      SELECT gc.*,
+        le.emp_name as nick_name,
+        le.emp_cover as cover,
+        gt.comment_emp_id as f_emp_id,
+        lp.emp_name as f_nick_name,
+        lgoods.goods_name as goods_name
+        FROM goods_comment gc
+      LEFT JOIN lx_emp le ON gc.comment_emp_id=le.emp_id
+      LEFT JOIN goods_comment gt ON gc.comment_fplid=gt.comment_id
+      LEFT JOIN lx_emp lp ON gt.comment_emp_id=lp.emp_id
+      LEFT JOIN paopao_goods lgoods ON lgoods.goods_id=gc.goods_id
+      WHERE  1=1
+        <if test="goods_id != null and goods_id != ''">
+            and gc.goods_id=#{goods_id}
+        </if>
+        <if test="emp_id != null and emp_id != ''">
+            and gc.comment_emp_id=#{emp_id}
+        </if>
+        <if test="goods_emp_id != null and goods_emp_id != ''">
+            and gc.goods_emp_id=#{goods_emp_id}
+        </if>
+        <if test="is_del != null and is_del != ''">
+            and gc.is_del=#{is_del}
+        </if>
+
+        ORDER BY gc.dateline DESC
+        limit #{index},#{size}
+    </select>
+
+
+    <select id="listAllComment" resultMap="my_goods_comment">
+        SELECT gc.*,le.emp_name as nick_name,le.emp_cover as cover,gt.comment_emp_id as f_emp_id, lp.emp_name as f_nick_name
+        FROM goods_comment gc
+        LEFT JOIN lx_emp le ON gc.comment_emp_id=le.emp_id
+        LEFT JOIN goods_comment gt ON gc.comment_fplid=gt.comment_id
+        LEFT JOIN lx_emp lp ON gt.comment_emp_id=lp.emp_id
+        WHERE  1=1
+        <if test="goods_id != null and goods_id != ''">
+            and gc.goods_id=#{goods_id}
+        </if>
+
+        <if test="goods_emp_id != null and goods_emp_id != ''">
+            and gc.goods_emp_id=#{goods_emp_id}
+        </if>
+        <if test="is_del != null and is_del != ''">
+            and gc.is_del=#{is_del}
+        </if>
+    </select>
+
+
+    <select id="countStarNumber" resultType="long">
+        select sum(le.starNumber) from goods_comment le
+        WHERE 1=1
+        <if test="goods_id != null and goods_id != ''">
+            AND le.goods_id = #{goods_id}
+        </if>
+        <if test="goods_emp_id != null and goods_emp_id != ''">
+            AND le.goods_emp_id = #{goods_emp_id}
+        </if>
+    </select>
+
+    <select id="count" resultType="long">
+        select count(le.comment_id) from goods_comment le
+        WHERE 1=1
+        <if test="goods_id != null and goods_id != ''">
+            AND le.goods_id = #{goods_id}
+        </if>
+        <if test="goods_emp_id != null and goods_emp_id != ''">
+            AND le.goods_emp_id = #{goods_emp_id}
+        </if>
+        <if test="is_del != null and is_del != ''">
+            and le.is_del=#{is_del}
+        </if>
+    </select>
+
+    <update id="deleteById" parameterType="String">
+        UPDATE goods_comment set is_del='1' WHERE comment_id=#{comment_id}
+    </update>
+
+    <select id="find" resultMap="my_goods_comment">
+        SELECT gc.*,
+        le.emp_name as nick_name,
+        le.emp_cover as cover,
+        gt.comment_emp_id as f_emp_id,
+        lp.emp_name as f_nick_name,
+        lgoods.goods_name as goods_name
+        FROM goods_comment gc
+          LEFT JOIN lx_emp le ON gc.comment_emp_id=le.emp_id
+          LEFT JOIN goods_comment gt ON gc.comment_fplid=gt.comment_id
+          LEFT JOIN lx_emp lp ON gt.comment_emp_id=lp.emp_id
+          LEFT JOIN paopao_goods lgoods ON lgoods.goods_id=gc.goods_id
+          WHERE  1=1
+            and gc.comment_id=#{id}
+    </select>
+
+</mapper>

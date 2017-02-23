@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.PartTimeTypeDao">
+    <resultMap id="my_part_time_type" type="com.liangxunwang.unimanager.model.PartTimeType">
+        <id column="type_id" property="id"/>
+        <result column="type_name" property="name"/>
+        <result column="type_cover" property="cover"/>
+    </resultMap>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.PartTimeType">
+        INSERT INTO part_time_type(type_id, type_name, type_cover)
+        VALUES (#{id}, #{name}, #{cover})
+    </insert>
+
+    <select id="list" resultMap="my_part_time_type">
+        SELECT * FROM part_time_type
+    </select>
+
+    <delete id="delete" parameterType="String">
+        DELETE FROM part_time_type WHERE type_id=#{id}
+    </delete>
+
+</mapper>

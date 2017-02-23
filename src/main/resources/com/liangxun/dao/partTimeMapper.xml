@@ -1,0 +1,114 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.PartTimeDao">
+    <resultMap id="my_part_time" type="com.liangxunwang.unimanager.model.PartTime">
+        <id column="id" property="id"/>
+        <result column="type_id" property="typeId"/>
+        <result column="title" property="title"/>
+        <result column="cont" property="cont"/>
+        <result column="people_number" property="peopleNumber"/>
+        <result column="money" property="money"/>
+        <result column="contact" property="contact"/>
+        <result column="mobile" property="mobile"/>
+        <result column="qq" property="qq"/>
+        <result column="address" property="address"/>
+        <result column="emp_id" property="empId"/>
+        <result column="is_del" property="isDel"/>
+        <result column="is_use" property="isUse"/>
+        <result column="school_id" property="schoolId"/>
+        <result column="dateline" property="dateline"/>
+    </resultMap>
+
+    <resultMap id="my_part_time_vo" type="com.liangxunwang.unimanager.mvc.vo.PartTimeVO">
+        <id column="id" property="id"/>
+        <result column="type_id" property="typeId"/>
+        <result column="title" property="title"/>
+        <result column="cont" property="cont"/>
+        <result column="people_number" property="peopleNumber"/>
+        <result column="money" property="money"/>
+        <result column="contact" property="contact"/>
+        <result column="mobile" property="mobile"/>
+        <result column="qq" property="qq"/>
+        <result column="address" property="address"/>
+        <result column="emp_id" property="empId"/>
+        <result column="is_del" property="isDel"/>
+        <result column="is_use" property="isUse"/>
+        <result column="school_id" property="schoolId"/>
+        <result column="dateline" property="dateline"/>
+        <result column="emp_name" property="empName"/>
+        <result column="emp_cover" property="empCover"/>
+        <result column="type_name" property="typeName"/>
+        <result column="type_cover" property="typeCover"/>
+        <result column="schoolName" property="schoolName"/>
+    </resultMap>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.PartTime">
+        INSERT INTO part_time (id, type_id, title, cont, people_number, money, contact, mobile, qq, address, emp_id, is_del, is_use,school_id, dateline)
+        VALUES (#{id}, #{typeId}, #{title}, #{cont}, #{peopleNumber}, #{money, jdbcType=VARCHAR}, #{contact}, #{mobile}, #{qq}, #{address}, #{empId}, #{isDel, jdbcType=VARCHAR}, #{isUse, jdbcType=VARCHAR},#{schoolId}, #{dateline, jdbcType=VARCHAR})
+    </insert>
+
+    <select id="list" resultMap="my_part_time_vo">
+          SELECT pt.*, le.emp_name as empName,le.emp_cover as empCover, ptt.type_name as typeName, ptt.type_cover as typeCover, lcollege.name as schoolName FROM part_time  pt
+          LEFT JOIN lx_emp le ON pt.emp_id=le.emp_id
+          LEFT JOIN part_time_type ptt ON pt.type_id=ptt.type_id
+          LEFT JOIN college lcollege ON pt.school_id=lcollege.coid
+          WHERE pt.is_del='0'
+          AND pt.is_use='0'
+          <if test="schoolId != null and schoolId != ''">
+             AND pt.school_id=#{schoolId}
+          </if>
+        <if test="typeId != null and typeId != ''">
+            AND pt.type_id=#{typeId}
+        </if>
+        <if test="keyWords != null and keyWords != ''">
+            AND pt.title  like CONCAT('%',#{keyWords},'%')
+        </if>
+        <if test="empId != null and empId != ''">
+            AND pt.emp_id=#{empId}
+        </if>
+        ORDER BY pt.dateline DESC
+         limit #{index},#{size}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT count(pt.id) FROM part_time pt
+        WHERE pt.is_del='0'
+        AND pt.is_use='0'
+        <if test="schoolId != null and schoolId != ''">
+            AND pt.school_id=#{schoolId}
+        </if>
+        <if test="typeId != null and typeId != ''">
+            AND pt.type_id=#{typeId}
+        </if>
+        <if test="keyWords != null and keyWords != ''">
+            AND pt.title  like CONCAT('%',#{keyWords},'%')
+        </if>
+        <if test="empId != null and empId != ''">
+            AND pt.emp_id=#{empId}
+        </if>
+    </select>
+
+    <select id="findById" resultMap="my_part_time_vo" parameterType="String">
+        SELECT pt.*, le.emp_name,le.emp_cover, ptt.type_name,ptt.type_cover FROM part_time  pt
+          LEFT JOIN lx_emp le ON pt.emp_id=le.emp_id
+          LEFT JOIN part_time_type ptt ON pt.type_id=ptt.type_id
+          WHERE pt.is_del='0'
+          AND pt.is_use='0'
+          AND pt.id=#{id}
+    </select>
+
+    <update id="delete" parameterType="String">
+        UPDATE part_time set is_del='1' WHERE id=#{id}
+    </update>
+
+    <update id="notUse" parameterType="String">
+        UPDATE part_time set is_use='1' WHERE id=#{id}
+    </update>
+
+    <update id="deletePartTimeByEmp" parameterType="String">
+        UPDATE  part_time set is_del='1' WHERE EMP_ID=#{empId} AND SCHOOL_ID=#{schoolId}
+    </update>
+
+</mapper>

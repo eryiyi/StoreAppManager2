@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.PkCommentDao">
+    <resultMap id="my_pk_comment" type="com.liangxunwang.unimanager.model.PKComment">
+        <id column="pk_comment_id" property="id"/>
+        <result column="pk_zp_id" property="zpId"/>
+        <result column="emp_id" property="empId"/>
+        <result column="comment_cont" property="commentCont"/>
+        <result column="comment_fplid" property="fPlid"/>
+        <result column="dateline" property="dateline"/>
+    </resultMap>
+
+    <resultMap id="my_pk_comment_vo" type="com.liangxunwang.unimanager.mvc.vo.PkCommentVO">
+        <id column="pk_comment_id" property="id"/>
+        <result column="pk_zp_id" property="zpId"/>
+        <result column="emp_id" property="empId"/>
+        <result column="comment_cont" property="commentCont"/>
+        <result column="comment_fplid" property="fPlid"/>
+        <result column="dateline" property="dateline"/>
+        <result column="nick_name" property="nickName"/>
+        <result column="cover" property="cover"/>
+        <result column="fnick_name" property="fNickName"/>
+    </resultMap>
+
+    <insert id="saveComment" parameterType="com.liangxunwang.unimanager.model.PKComment">
+        INSERT INTO PK_COMMENT(PK_COMMENT_ID, PK_ZP_ID, EMP_ID, COMMENT_CONT, COMMENT_FPLID, DATELINE)
+        VALUES (#{id}, #{zpId}, #{empId}, #{commentCont}, #{fPlid, jdbcType=VARCHAR}, #{dateline})
+    </insert>
+
+    <select id="list" resultMap="my_pk_comment_vo">
+
+        SELECT pc.*,le.emp_name as nick_name,le.emp_cover as cover,lp.emp_name as fnick_name
+        FROM PK_COMMENT pc
+        LEFT JOIN LX_EMP le ON pc.EMP_ID=le.emp_id
+        LEFT JOIN PK_COMMENT cr ON pc.comment_fplid=cr.PK_COMMENT_ID
+        LEFT JOIN LX_EMP lp ON cr.EMP_ID=lp.emp_id
+        WHERE pc.PK_ZP_ID=#{zpId}
+        ORDER BY pc.dateline ASC
+        limit #{index},#{size}
+    </select>
+
+
+</mapper>

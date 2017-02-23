@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.NoticeHoutaiDao">
+    <resultMap id="noticeHoutai" type="com.liangxunwang.unimanager.model.NoticeHoutai">
+        <id column="notice_id" property="notice_id"/>
+        <result column="notice_title" property="notice_title"/>
+        <result column="notice_content" property="notice_content"/>
+        <result column="dateline" property="dateline"/>
+        <result column="manager_id" property="manager_id"/>
+    </resultMap>
+
+    <select id="lists" resultMap="noticeHoutai">
+        SELECT * from notice_houtai
+        WHERE 1=1
+        <if test="manager_id != null and manager_id != ''">
+            AND manager_id = #{manager_id}
+        </if>
+        ORDER BY dateline DESC
+        limit #{index},#{size}
+    </select>
+
+    <select id="count" resultType="Long">
+        SELECT count(notice_id) FROM notice_houtai
+        WHERE 1=1
+        <if test="manager_id != null and manager_id != ''">
+            AND manager_id = #{manager_id}
+        </if>
+    </select>
+
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.NoticeHoutai">
+        INSERT INTO notice_houtai(notice_id, notice_title, notice_content, dateline, manager_id)
+        VALUES (#{notice_id}, #{notice_title}, #{notice_content}, #{dateline,jdbcType=VARCHAR}, #{manager_id,jdbcType=VARCHAR})
+    </insert>
+
+
+    <delete id="delete" parameterType="String">
+        DELETE FROM notice_houtai where notice_id = #{notice_id}
+    </delete>
+
+    <select id="findById" parameterType="String" resultMap="noticeHoutai">
+        SELECT * FROM notice_houtai where notice_id=#{notice_id}
+    </select>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.NoticeHoutai">
+        UPDATE notice_houtai
+        set notice_title=#{notice_title},
+        notice_content=#{notice_content}
+         WHERE notice_id=#{notice_id}
+    </update>
+</mapper>

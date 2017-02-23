@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.LxAttributeDao">
+    <resultMap id="lxAttribute" type="com.liangxunwang.unimanager.model.LxAttribute">
+        <id column="lx_attribute_id" property="lx_attribute_id"/>
+        <result column="lx_attribute_name" property="lx_attribute_name"/>
+        <result column="lx_attribute_nick" property="lx_attribute_nick"/>
+        <result column="lx_attribute_rate" property="lx_attribute_rate"/>
+    </resultMap>
+
+    <select id="lists" resultMap="lxAttribute">
+        SELECT * from lx_attribute
+    </select>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.LxAttribute">
+        INSERT INTO lx_attribute(lx_attribute_id, lx_attribute_name, lx_attribute_nick, lx_attribute_rate)
+        VALUES (#{lx_attribute_id}, #{lx_attribute_name}, #{lx_attribute_nick}, #{lx_attribute_rate})
+    </insert>
+
+    <select id="findById" parameterType="String" resultMap="lxAttribute">
+        SELECT * FROM lx_attribute where lx_attribute_id=#{lx_attribute_id}
+    </select>
+
+    <select id="findByNick" parameterType="String" resultMap="lxAttribute">
+        SELECT * FROM lx_attribute where lx_attribute_nick=#{lx_attribute_nick}
+    </select>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.LxAttribute">
+        UPDATE lx_attribute SET lx_attribute_nick=#{lx_attribute_nick} , lx_attribute_rate=#{lx_attribute_rate}
+        WHERE lx_attribute_id=#{lx_attribute_id}
+    </update>
+</mapper>

@@ -1,0 +1,70 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.CountDao">
+    <resultMap id="my_count" type="com.liangxunwang.unimanager.model.Count">
+        <id column="count_id" property="id"/>
+        <result column="emp_id" property="empId"/>
+        <result column="count" property="count"/>
+    </resultMap>
+
+    <resultMap id="countVo" type="com.liangxunwang.unimanager.mvc.vo.CountVo">
+        <id column="count_id" property="id"/>
+        <result column="emp_id" property="empId"/>
+        <result column="count" property="count"/>
+
+        <result column="emp_number" property="emp_number"/>
+        <result column="emp_name" property="emp_name"/>
+        <result column="emp_mobile" property="emp_mobile"/>
+        <result column="emp_cover" property="emp_cover"/>
+    </resultMap>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.Count">
+        INSERT INTO lx_count(count_id, emp_id, count)
+        VALUES (#{id}, #{empId}, #{count})
+    </insert>
+
+
+    <update id="updateScore" parameterType="String">
+        UPDATE LX_COUNT set count=(count + ${count}) WHERE EMP_ID=#{empId}
+    </update>
+
+    <update id="updateScoreDelete" parameterType="String">
+        UPDATE LX_COUNT set count=(count - ${count}) WHERE EMP_ID=#{empId}
+    </update>
+
+    <select id="list" resultMap="countVo">
+        SELECT sn.*,le.emp_number as emp_number,le.emp_name as emp_name,le.emp_mobile as emp_mobile,le.emp_cover as emp_cover
+        from lx_count sn
+        LEFT JOIN lx_emp  le ON le.emp_id = sn.emp_id
+        WHERE 1=1
+        <if test="emp_mobile != null and emp_mobile != ''">
+            AND le.emp_mobile = #{emp_mobile}
+        </if>
+        <if test="keyWords != null and keyWords != ''">
+            AND le.emp_name like CONCAT('%',#{keyWords},'%')
+        </if>
+        limit #{index},#{size}
+    </select>
+
+    <select id="findById" parameterType="String" resultMap="countVo">
+       SELECT sn.*,le.emp_number as emp_number,le.emp_name as emp_name,le.emp_mobile as emp_mobile,le.emp_cover as emp_cover
+        from lx_count sn
+        LEFT JOIN lx_emp le ON le.emp_id = sn.emp_id
+        WHERE sn.emp_id=#{emp_id}
+    </select>
+
+    <select id="count" resultType="long">
+        select count(sn.count_id) from lx_count sn
+        LEFT JOIN lx_emp le ON le.emp_id = sn.emp_id
+        WHERE 1=1
+        <if test="emp_mobile != null and emp_mobile != ''">
+            AND le.emp_mobile = #{emp_mobile}
+        </if>
+        <if test="keyWords != null and keyWords != ''">
+            AND le.emp_name like CONCAT('%',#{keyWords},'%')
+        </if>
+    </select>
+
+</mapper>

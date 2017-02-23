@@ -1,0 +1,272 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.ManagerInfoDao">
+    <resultMap id="my_manager_info" type="com.liangxunwang.unimanager.model.ManagerInfo">
+        <id column="info_id" property="id"/>
+        <result column="emp_id" property="emp_id"/>
+        <result column="real_name" property="realName"/>
+        <result column="idcard" property="idcard"/>
+        <result column="idcard_url" property="idcardUrl"/>
+        <result column="bank_card" property="bankCard"/>
+        <result column="bank_type" property="bankType"/>
+        <result column="bank_address" property="bankAddress"/>
+        <result column="bank_name" property="bankName"/>
+
+        <result column="lat_company" property="lat_company"/>
+        <result column="lng_company" property="lng_company"/>
+        <result column="company_address" property="company_address"/>
+        <result column="company_person" property="company_person"/>
+        <result column="company_tel" property="company_tel"/>
+        <result column="company_detail" property="company_detail"/>
+        <result column="company_name" property="company_name"/>
+        <result column="company_pic" property="company_pic"/>
+        <result column="company_star" property="company_star"/>
+        <result column="dateline" property="dateline"/>
+        <result column="is_check" property="is_check"/>
+        <result column="type_id" property="type_id"/>
+        <result column="is_card" property="is_card"/>
+
+        <result column="yingye_time_start" property="yingye_time_start"/>
+        <result column="yingye_time_end" property="yingye_time_end"/>
+        <result column="shouhui" property="shouhui"/>
+        <result column="mobile" property="mobile"/>
+        <result column="pay_number" property="payNumber"/>
+        <result column="check_name" property="checkName"/>
+        <result column="lx_class_id" property="lx_class_id"/>
+        <result column="company_yyzz" property="company_yyzz"/>
+    </resultMap>
+
+    <resultMap id="my_manager_info_vo" type="com.liangxunwang.unimanager.mvc.vo.ManagerInfoVo">
+        <id column="info_id" property="id"/>
+        <result column="emp_id" property="emp_id"/>
+        <result column="real_name" property="realName"/>
+        <result column="idcard" property="idcard"/>
+        <result column="idcard_url" property="idcardUrl"/>
+        <result column="bank_card" property="bankCard"/>
+        <result column="bank_type" property="bankType"/>
+        <result column="bank_address" property="bankAddress"/>
+        <result column="bank_name" property="bankName"/>
+
+        <result column="lat_company" property="lat_company"/>
+        <result column="lng_company" property="lng_company"/>
+        <result column="company_address" property="company_address"/>
+        <result column="company_person" property="company_person"/>
+        <result column="company_tel" property="company_tel"/>
+        <result column="company_detail" property="company_detail"/>
+        <result column="company_name" property="company_name"/>
+        <result column="company_pic" property="company_pic"/>
+        <result column="company_star" property="company_star"/>
+        <result column="dateline" property="dateline"/>
+        <result column="is_check" property="is_check"/>
+        <result column="type_id" property="type_id"/>
+        <result column="is_card" property="is_card"/>
+
+        <result column="yingye_time_start" property="yingye_time_start"/>
+        <result column="yingye_time_end" property="yingye_time_end"/>
+        <result column="shouhui" property="shouhui"/>
+        <result column="mobile" property="mobile"/>
+        <result column="pay_number" property="payNumber"/>
+        <result column="check_name" property="checkName"/>
+
+        <result column="emp_cover" property="emp_cover"/>
+        <result column="emp_mobile" property="emp_mobile"/>
+        <result column="emp_name" property="emp_name"/>
+        <result column="is_card_emp" property="is_card_emp"/>
+
+        <result column="lx_class_id" property="lx_class_id"/>
+        <result column="lx_class_name" property="lx_class_name"/>
+        <result column="lx_class_cover" property="lx_class_cover"/>
+        <result column="company_yyzz" property="company_yyzz"/>
+
+    </resultMap>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.ManagerInfo">
+        INSERT INTO MANAGER_INFO (INFO_ID, emp_id, company_name, lat_company, lng_company, dateline, lx_class_id, company_yyzz, company_person, company_tel, idcard, idcard_url)
+        VALUES (#{id}, #{emp_id}, #{company_name},#{lat_company, jdbcType=VARCHAR} , #{lng_company, jdbcType=VARCHAR},
+         #{dateline, jdbcType=VARCHAR}, #{lx_class_id, jdbcType=VARCHAR}, #{company_yyzz, jdbcType=VARCHAR}, #{company_person, jdbcType=VARCHAR},
+         #{company_tel, jdbcType=VARCHAR}, #{idcard, jdbcType=VARCHAR}, #{idcardUrl, jdbcType=VARCHAR})
+    </insert>
+
+    <select id="findById" parameterType="String" resultMap="my_manager_info">
+         SELECT sn.*,
+        le.emp_cover as emp_cover,
+        le.emp_name as emp_name,
+        le.emp_mobile as emp_mobile,
+        lclass.lx_class_name as lx_class_name,
+        lclass.lx_class_cover as lx_class_cover,
+        ltype.type_name as type_name
+        FROM MANAGER_INFO  sn
+        LEFT JOIN lx_emp le ON sn.emp_id=le.emp_id
+        LEFT JOIN lx_goods_type ltype ON sn.type_id=ltype.type_id
+        LEFT JOIN lx_class lclass ON lclass.lx_class_id=sn.lx_class_id
+         WHERE sn.emp_id=#{emp_id}
+    </select>
+
+
+    <select id="findByIdInfo" parameterType="String" resultMap="my_manager_info_vo">
+        SELECT sn.*,
+        le.emp_cover as emp_cover,
+        le.emp_name as emp_name,
+        le.emp_mobile as emp_mobile,
+        lclass.lx_class_name as lx_class_name,
+        lclass.lx_class_cover as lx_class_cover,
+        ltype.type_name as type_name
+        FROM MANAGER_INFO  sn
+        LEFT JOIN lx_emp le ON sn.emp_id=le.emp_id
+        LEFT JOIN lx_goods_type ltype ON sn.type_id=ltype.type_id
+        LEFT JOIN lx_class lclass ON lclass.lx_class_id=sn.lx_class_id
+        WHERE sn.info_id=#{id}
+    </select>
+
+    <select id="findByInfoId" parameterType="String" resultMap="my_manager_info">
+          SELECT sn.*,
+        le.emp_cover as emp_cover,
+        le.emp_name as emp_name,
+        le.emp_mobile as emp_mobile,
+        lclass.lx_class_name as lx_class_name,
+        lclass.lx_class_cover as lx_class_cover,
+        ltype.type_name as type_name
+        FROM MANAGER_INFO  sn
+        LEFT JOIN lx_emp le ON sn.emp_id=le.emp_id
+        LEFT JOIN lx_goods_type ltype ON sn.type_id=ltype.type_id
+        LEFT JOIN lx_class lclass ON lclass.lx_class_id=sn.lx_class_id
+         WHERE sn.info_id=#{id}
+    </select>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.ManagerInfo">
+        UPDATE MANAGER_INFO SET
+        REAL_NAME=#{realName}, IDCARD=#{idcard}, IDCARD_URL=#{idcardUrl},bank_card=#{bankCard},company_yyzz=#{company_yyzz},
+        bank_type=#{bankType},bank_address=#{bankAddress},bank_name=#{bankName},
+        pay_number=#{payNumber},check_name=#{checkName},mobile=#{mobile},
+        company_address=#{company_address},company_pic=#{company_pic},
+        company_person=#{company_person}, company_tel=#{company_tel},lat_company=#{lat_company},lng_company=#{lng_company},
+        company_detail=#{company_detail},company_name=#{company_name},type_id=#{type_id}
+         WHERE INFO_ID=#{id}
+    </update>
+
+    <select id="getEmpMsg" parameterType="String" resultMap="my_manager_info_vo">
+        SELECT sn.*,
+        le.emp_cover as emp_cover,
+        le.emp_name as emp_name,
+        le.emp_mobile as emp_mobile,
+        lclass.lx_class_name as lx_class_name,
+        lclass.lx_class_cover as lx_class_cover,
+        ltype.type_name as type_name
+        FROM MANAGER_INFO  sn
+        LEFT JOIN lx_emp le ON sn.emp_id=le.emp_id
+        LEFT JOIN lx_goods_type ltype ON sn.type_id=ltype.type_id
+        LEFT JOIN lx_class lclass ON lclass.lx_class_id=sn.lx_class_id
+         WHERE sn.emp_id=#{id}
+    </select>
+
+    <select id="lists" resultMap="my_manager_info_vo">
+        SELECT lmanager.*,
+        le.emp_name as emp_name,
+        le.emp_cover as emp_cover,
+        le.emp_mobile as emp_mobile,
+        le.is_card_emp as is_card_emp,
+        lclass.lx_class_name as lx_class_name,
+        lclass.lx_class_cover as lx_class_cover,
+        ltype.type_name as type_name
+        FROM MANAGER_INFO lmanager
+        LEFT JOIN lx_emp le ON lmanager.emp_id=le.emp_id
+        LEFT JOIN lx_goods_type ltype ON lmanager.type_id=ltype.type_id
+        LEFT JOIN lx_class lclass ON lclass.lx_class_id=lmanager.lx_class_id
+        WHERE 1 = 1
+
+        <if test="cont !=null and cont !=''">
+            AND (lmanager.company_name like CONCAT('%',#{cont},'%') OR lmanager.company_tel like CONCAT('%',#{cont},'%')OR lmanager.company_person like CONCAT('%',#{cont},'%') )
+        </if>
+
+        <if test="is_card !=null and is_card !=''">
+            AND lmanager.is_card = #{is_card}
+        </if>
+
+        ORDER BY  lmanager.dateline DESC
+        limit #{index},#{size}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT count(INFO_ID) FROM MANAGER_INFO
+        WHERE 1 = 1
+        <if test="cont !=null and cont !=''">
+            AND (company_name like CONCAT('%',#{cont},'%') OR company_tel like CONCAT('%',#{cont},'%')OR company_person like CONCAT('%',#{cont},'%') )
+        </if>
+        <if test="is_card !=null and is_card !=''">
+            AND is_card = #{is_card}
+        </if>
+    </select>
+
+    <update id="updateCheck" parameterType="com.liangxunwang.unimanager.model.ManagerInfo">
+        UPDATE MANAGER_INFO SET
+        is_check=#{is_check}
+        WHERE INFO_ID=#{id}
+    </update>
+
+    <select id="listsLocation" resultMap="my_manager_info_vo">
+        SELECT lmanager.*,
+        le.emp_name as nick_name,
+        le.emp_cover as emp_cover,
+        le.emp_mobile as emp_mobile,
+        lclass.lx_class_name as lx_class_name,
+        lclass.lx_class_cover as lx_class_cover,
+        ltype.type_name as type_name
+        FROM MANAGER_INFO lmanager
+        LEFT JOIN lx_emp le ON lmanager.emp_id=le.emp_id
+        LEFT JOIN lx_goods_type ltype ON lmanager.type_id=ltype.type_id
+        LEFT JOIN lx_class lclass ON lclass.lx_class_id=lmanager.lx_class_id
+        WHERE 1 = 1 AND  is_check = 1
+
+        <!--<if test="lat_company != null and lat_company != ''">-->
+            <!--AND lmanager.lat_company > (#{lat_company}-1) AND   (#{lat_company} + 1) > lmanager.lat_company-->
+        <!--</if>-->
+        <!--<if test="lng_company != null and lng_company != ''">-->
+            <!--AND lmanager.lng_company > (#{lng_company}-1) AND   (#{lng_company} + 1) > lmanager.lng_company-->
+        <!--</if>-->
+
+        <if test="cont !=null and cont !=''">
+            AND (lmanager.company_name like CONCAT('%',#{cont},'%') OR lmanager.company_detail like CONCAT('%',#{cont},'%') )
+        </if>
+        <!--<if test="lx_class_id != null and lx_class_id != ''">-->
+            <!--AND lmanager.lx_class_id=#{lx_class_id}-->
+        <!--</if>-->
+
+        <if test="schoolIds != null and schoolIds != ''">
+            AND lmanager.lx_class_id IN
+            <foreach collection="schoolIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="is_dxk != null and is_dxk == 1">
+            AND lmanager.is_card = '1'
+        </if>
+
+        <if test="lat_company != null and lat_company != '' and lng_company != null and lng_company != ''">
+          order by ACOS(SIN((#{lat_company} * 3.1415) / 180 ) *SIN((lmanager.lat_company * 3.1415) / 180 ) +COS((#{lat_company} * 3.1415) / 180 ) * COS((lmanager.lat_company * 3.1415) / 180 ) *COS((#{lng_company}* 3.1415) / 180 - (lmanager.lng_company * 3.1415) / 180 ) ) * 6380 asc
+        </if>
+        <if test="is_time != null and is_time == 1">
+            ORDER BY lmanager.dateline DESC
+        </if>
+
+        <if test="is_count != null and is_count == 1">
+            ORDER BY (select COUNT(*) from paopao_goods lgoods where lgoods.goods_emp_id = lmanager.emp_id) desc
+        </if>
+
+        limit #{index},#{size}
+    </select>
+
+    <delete id="deleteById" parameterType="String">
+        DELETE FROM MANAGER_INFO where info_id = #{info_id}
+    </delete>
+
+    <update id="updateDxkCard" parameterType="com.liangxunwang.unimanager.model.ManagerInfo">
+        UPDATE MANAGER_INFO SET
+        is_card=#{is_card}
+        WHERE INFO_ID=#{id}
+    </update>
+
+
+</mapper>

@@ -1,0 +1,111 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.DianpuFavourDao">
+    <resultMap id="dianpuFavour" type="com.liangxunwang.unimanager.model.DianPuFavour">
+        <id column="favour_no" property="favour_no"/>
+        <result column="emp_id" property="emp_id"/>
+        <result column="emp_id_favour" property="emp_id_favour"/>
+        <result column="dateline" property="dateline"/>
+    </resultMap>
+
+    <resultMap id="dianpuFavourVO" type="com.liangxunwang.unimanager.mvc.vo.DianpuFavourVO">
+        <id column="favour_no" property="favour_no"/>
+        <result column="emp_id" property="emp_id"/>
+        <result column="emp_id_favour" property="emp_id_favour"/>
+        <result column="dateline" property="dateline"/>
+
+        <result column="emp_mobile" property="emp_mobile"/>
+        <result column="emp_name" property="emp_name"/>
+        <result column="emp_cover" property="emp_cover"/>
+        <result column="company_pic" property="company_pic"/>
+        <result column="company_name" property="company_name"/>
+        <result column="company_address" property="company_address"/>
+        <result column="company_person" property="company_person"/>
+    </resultMap>
+
+    <select id="lists" resultMap="dianpuFavourVO">
+        SELECT sn.*,
+        le.emp_name as emp_name,
+        le.emp_mobile as emp_mobile,
+        le.emp_cover as emp_cover,
+        lmanager.company_address as company_address,
+        lmanager.company_person as company_person,
+        lmanager.company_name as company_name,
+        lmanager.company_pic as company_pic
+        from dianpu_favour sn
+        LEFT JOIN manager_info lmanager ON lmanager.emp_id = sn.emp_id
+        LEFT JOIN lx_emp le ON le.emp_id = sn.emp_id
+        WHERE 1=1
+        <if test="emp_id_favour != null and emp_id_favour != ''">
+            AND sn.emp_id_favour = #{emp_id_favour}
+        </if>
+        ORDER BY sn.dateline DESC
+        limit #{index},#{size}
+    </select>
+
+    <select id="listsFensi" resultMap="dianpuFavourVO">
+        SELECT sn.*,
+        le.emp_name as emp_name,
+        le.emp_mobile as emp_mobile,
+        le.emp_cover as emp_cover,
+        lmanager.company_address as company_address,
+        lmanager.company_person as company_person,
+        lmanager.company_name as company_name,
+        lmanager.company_pic as company_pic
+        from dianpu_favour sn
+        LEFT JOIN manager_info lmanager ON lmanager.emp_id = sn.emp_id
+        LEFT JOIN lx_emp le ON le.emp_id = sn.emp_id_favour
+        WHERE 1=1
+        <if test="emp_id != null and emp_id != ''">
+            AND sn.emp_id = #{emp_id}
+        </if>
+        ORDER BY sn.dateline DESC
+        limit #{index},#{size}
+    </select>
+
+    <select id="listsFensiAll" resultMap="dianpuFavourVO">
+        SELECT sn.*,
+        le.emp_name as emp_name,
+        le.emp_mobile as emp_mobile,
+        le.emp_cover as emp_cover,
+        lmanager.company_address as company_address,
+        lmanager.company_person as company_person,
+        lmanager.company_name as company_name,
+        lmanager.company_pic as company_pic
+        from dianpu_favour sn
+        LEFT JOIN manager_info lmanager ON lmanager.emp_id = sn.emp_id
+        LEFT JOIN lx_emp le ON le.emp_id = sn.emp_id_favour
+        WHERE 1=1
+        <if test="emp_id != null and emp_id != ''">
+            AND sn.emp_id = #{emp_id}
+        </if>
+    </select>
+
+
+    <select id="count" resultType="Long">
+        SELECT count(favour_no)
+        from dianpu_favour sn
+        LEFT JOIN manager_info lmanager ON lmanager.emp_id = sn.emp_id
+        LEFT JOIN lx_emp le ON le.emp_id = sn.emp_id_favour
+        WHERE 1=1
+        <if test="emp_id != null and emp_id != ''">
+            AND sn.emp_id = #{emp_id}
+        </if>
+    </select>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.DianPuFavour">
+        INSERT INTO dianpu_favour(favour_no, emp_id, emp_id_favour, dateline)
+        VALUES (#{favour_no}, #{emp_id}, #{emp_id_favour}, #{dateline})
+    </insert>
+
+    <delete id="delete" parameterType="String">
+        DELETE FROM dianpu_favour where favour_no = #{favour_no}
+    </delete>
+
+    <select id="find" resultMap="dianpuFavour">
+        SELECT * FROM dianpu_favour WHERE emp_id=#{emp_id} AND  emp_id_favour=#{emp_id_favour}
+    </select>
+
+</mapper>

@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.DxkAdDao">
+    <resultMap id="dxkAd" type="com.liangxunwang.unimanager.model.DxkAd">
+        <id column="dxk_ad_id" property="dxk_ad_id"/>
+        <result column="dxk_ad_pic" property="dxk_ad_pic"/>
+        <result column="dxk_ad_title" property="dxk_ad_title"/>
+        <result column="dxk_ad_number" property="dxk_ad_number"/>
+    </resultMap>
+
+    <select id="lists" resultMap="dxkAd">
+        SELECT * from dxk_ad
+        ORDER BY dxk_ad_number DESC
+    </select>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.DxkAd">
+        INSERT INTO dxk_ad(dxk_ad_id, dxk_ad_pic, dxk_ad_title, dxk_ad_number)
+        VALUES (#{dxk_ad_id}, #{dxk_ad_pic}, #{dxk_ad_title}, #{dxk_ad_number,jdbcType=VARCHAR})
+    </insert>
+
+
+    <delete id="delete" parameterType="String">
+        DELETE FROM dxk_ad where dxk_ad_id = #{dxk_ad_id}
+    </delete>
+
+    <select id="findById" parameterType="String" resultMap="dxkAd">
+        SELECT * FROM dxk_ad where dxk_ad_id=#{dxk_ad_id}
+    </select>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.DxkAd">
+        UPDATE dxk_ad SET dxk_ad_title=#{dxk_ad_title},
+        dxk_ad_pic=#{dxk_ad_pic} ,
+         dxk_ad_number=#{dxk_ad_number,jdbcType=VARCHAR}
+         WHERE dxk_ad_id=#{dxk_ad_id}
+    </update>
+</mapper>

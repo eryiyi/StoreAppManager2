@@ -1,0 +1,229 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.PaihangObjDao">
+    <resultMap id="paihang" type="com.liangxunwang.unimanager.model.PaihangObj">
+        <id column="mm_paihang_id" property="mm_paihang_id"/>
+        <result column="goods_id" property="goods_id"/>
+        <result column="top_num" property="top_num"/>
+        <result column="is_del" property="is_del"/>
+        <result column="end_time" property="end_time"/>
+        <result column="is_type" property="is_type"/>
+    </resultMap>
+    <resultMap id="paihang_vo" type="com.liangxunwang.unimanager.mvc.vo.PaihangObjVO">
+        <id column="mm_paihang_id" property="mm_paihang_id"/>
+        <result column="goods_id" property="goods_id"/>
+        <result column="top_num" property="top_num"/>
+        <result column="is_del" property="is_del"/>
+        <result column="end_time" property="end_time"/>
+        <result column="is_type" property="is_type"/>
+
+
+        <result column="goods_type_id" property="goods_type_id"/>
+        <result column="goods_name" property="goods_name"/>
+        <result column="goods_cover" property="goods_cover"/>
+        <result column="goods_cont" property="goods_cont"/>
+        <result column="sell_price" property="sell_price"/>
+        <result column="market_price" property="market_price"/>
+        <result column="goods_address" property="goods_address"/>
+        <result column="goods_person" property="goods_person"/>
+        <result column="goods_tel" property="goods_tel"/>
+        <result column="goods_qq" property="goods_qq"/>
+        <result column="goods_is_use" property="goods_is_use"/>
+        <result column="goods_is_del" property="goods_is_del"/>
+        <result column="up_time" property="up_time"/>
+        <result column="goods_count" property="goods_count"/>
+        <result column="goods_count_sale" property="goods_count_sale"/>
+        <result column="goods_position" property="goods_position"/>
+        <result column="is_zhiying" property="is_zhiying"/>
+        <result column="goods_emp_id" property="goods_emp_id"/>
+        <result column="manager_id" property="manager_id"/>
+    </resultMap>
+
+    <select id="listRecordVo" resultMap="paihang_vo">
+        SELECT m.*
+        FROM (
+        SELECT sn.* ,lg.goods_type_id as goods_type_id
+        ,lg.goods_name as goods_name
+        ,lg.goods_cover as goods_cover
+        ,lg.goods_cont as goods_cont
+        ,lg.sell_price as sell_price
+        ,lg.market_price as market_price
+        ,lg.goods_address as goods_address
+        ,lg.goods_person as goods_person
+        ,lg.goods_tel as goods_tel
+        ,lg.goods_qq as goods_qq
+        ,lg.goods_is_use as goods_is_use
+        ,lg.goods_is_del as goods_is_del
+        ,lg.up_time as up_time
+        ,lg.goods_count as goods_count
+        ,lg.goods_count_sale as goods_count_sale
+        ,lg.goods_position as goods_position
+        ,lg.is_zhiying as is_zhiying
+        ,lg.goods_emp_id as goods_emp_id
+        ,lg.manager_id as manager_id
+        from mm_paihang sn
+        LEFT JOIN PAOPAO_GOODS lg ON sn.goods_id=lg.goods_id
+        WHERE 1=1
+
+        <if test="is_del != null and is_del != ''">
+            AND sn.is_del = #{is_del}
+        </if>
+        <if test="goods_count != null and goods_count != ''">
+            AND lg.goods_count != '0'
+        </if>
+
+        <if test="is_type != null and is_type != ''">
+            AND sn.is_type = #{is_type}
+        </if>
+
+        <if test="keyword != null and keyword != ''">
+            AND  (lg.goods_name like CONCAT('%',#{keyword},'%') OR  lg.goods_cont = #{keyword})
+        </if>
+        ) m
+        ORDER  BY  m.top_num DESC limit #{index},#{size}
+    </select>
+
+    <select id="count" resultType="Long">
+        SELECT count(sn.mm_paihang_id) FROM mm_paihang sn
+        LEFT JOIN PAOPAO_GOODS lg ON sn.goods_id=lg.goods_id
+        WHERE 1=1
+        <if test="is_del != null and is_del != ''">
+            AND sn.is_del = #{is_del}
+        </if>
+        <if test="goods_count != null and goods_count != ''">
+            AND lg.goods_count != '0'
+        </if>
+
+        <if test="is_type != null and is_type != ''">
+            AND sn.is_type = #{is_type}
+        </if>
+
+        <if test="keyword != null and keyword != ''">
+            AND  (lg.goods_name like CONCAT('%',#{keyword},'%') OR  lg.goods_cont = #{keyword})
+        </if>
+    </select>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.PaihangObj">
+        INSERT INTO mm_paihang( mm_paihang_id, goods_id, top_num, is_del, end_time, is_type)
+        VALUES ( #{mm_paihang_id},#{goods_id}, #{top_num}, #{is_del}, #{end_time, jdbcType=VARCHAR}, #{is_type, jdbcType=VARCHAR})
+    </insert>
+
+    <update id="deleteById" parameterType="String">
+       DELETE FROM mm_paihang WHERE mm_paihang_id=#{mm_paihang_id}
+    </update>
+
+    <update id="updateTop"  parameterType="com.liangxunwang.unimanager.model.PaihangObj">
+        UPDATE mm_paihang SET top_num = #{top_num}, is_del = #{is_del}, end_time = #{end_time}, is_type = #{is_type}
+        WHERE mm_paihang_id=#{mm_paihang_id}
+    </update>
+
+
+    <update id="updateOverTime">
+        UPDATE mm_paihang SET is_del='1' WHERE end_time &lt; #{nowTime}
+    </update>
+
+    <select id="findByGoodsId" resultMap="paihang_vo">
+        SELECT * ,lg.goods_type_id as goods_type_id
+        ,lg.goods_name as goods_name
+        ,lg.goods_cover as goods_cover
+        ,lg.goods_cont as goods_cont
+        ,lg.sell_price as sell_price
+        ,lg.market_price as market_price
+        ,lg.goods_address as goods_address
+        ,lg.goods_person as goods_person
+        ,lg.goods_tel as goods_tel
+        ,lg.goods_qq as goods_qq
+        ,lg.goods_is_use as goods_is_use
+        ,lg.goods_is_del as goods_is_del
+        ,lg.up_time as up_time
+        ,lg.goods_count as goods_count
+        ,lg.goods_count_sale as goods_count_sale
+        ,lg.goods_position as goods_position
+        ,lg.is_zhiying as is_zhiying
+        ,lg.goods_emp_id as goods_emp_id
+        ,lg.manager_id as manager_id
+        from mm_paihang sn
+        LEFT JOIN PAOPAO_GOODS lg ON sn.goods_id=lg.goods_id
+
+        WHERE sn.goods_id=#{goods_id}
+        <if test="is_type != null and is_type != ''">
+            AND sn.is_type = #{is_type}
+        </if>
+
+    </select>
+
+    <select id="findById" resultMap="paihang_vo">
+        SELECT *,lg.goods_type_id as goods_type_id
+        ,lg.goods_name as goods_name
+        ,lg.goods_cover as goods_cover
+        ,lg.goods_cont as goods_cont
+        ,lg.sell_price as sell_price
+        ,lg.market_price as market_price
+        ,lg.goods_address as goods_address
+        ,lg.goods_person as goods_person
+        ,lg.goods_tel as goods_tel
+        ,lg.goods_qq as goods_qq
+        ,lg.goods_is_use as goods_is_use
+        ,lg.goods_is_del as goods_is_del
+        ,lg.up_time as up_time
+        ,lg.goods_count as goods_count
+        ,lg.goods_count_sale as goods_count_sale
+        ,lg.goods_position as goods_position
+        ,lg.is_zhiying as is_zhiying
+        ,lg.goods_emp_id as goods_emp_id
+        ,lg.manager_id as manager_id
+        from mm_paihang sn
+        LEFT JOIN PAOPAO_GOODS lg ON sn.goods_id=lg.goods_id
+
+        WHERE sn.mm_paihang_id=#{mm_paihang_id}
+        <if test="is_type != null and is_type != ''">
+            AND sn.is_type = #{is_type}
+        </if>
+        <if test="is_del != null and is_del != ''">
+            AND sn.is_del = #{is_del}
+        </if>
+    </select>
+
+
+
+    <select id="listRecordVoAll" resultMap="paihang_vo">
+        SELECT m.*
+        FROM (
+        SELECT sn.* ,lg.goods_type_id as goods_type_id
+        ,lg.goods_name as goods_name
+        ,lg.goods_cover as goods_cover
+        ,lg.goods_cont as goods_cont
+        ,lg.sell_price as sell_price
+        ,lg.market_price as market_price
+        ,lg.goods_address as goods_address
+        ,lg.goods_person as goods_person
+        ,lg.goods_tel as goods_tel
+        ,lg.goods_qq as goods_qq
+        ,lg.goods_is_use as goods_is_use
+        ,lg.goods_is_del as goods_is_del
+        ,lg.up_time as up_time
+        ,lg.goods_count as goods_count
+        ,lg.goods_count_sale as goods_count_sale
+        ,lg.goods_position as goods_position
+        ,lg.is_zhiying as is_zhiying
+        ,lg.goods_emp_id as goods_emp_id
+        ,lg.manager_id as manager_id
+        from mm_paihang sn
+        LEFT JOIN PAOPAO_GOODS lg ON sn.goods_id=lg.goods_id
+        WHERE 1=1
+
+        <if test="is_del != null and is_del != ''">
+            AND sn.is_del = #{is_del}
+        </if>
+
+        ) m
+        ORDER  BY  m.top_num DESC
+    </select>
+    <update id="deleteByGoodsId" parameterType="String">
+         DELETE FROM mm_paihang WHERE goods_id=#{goods_id}
+    </update>
+
+
+</mapper>

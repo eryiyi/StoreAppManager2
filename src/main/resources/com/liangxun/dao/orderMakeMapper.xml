@@ -1,0 +1,293 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.AppOrderMakeDao">
+    <resultMap id="order" type="com.liangxunwang.unimanager.model.Order">
+        <id column="order_no" property="order_no"/>
+        <result column="goods_id" property="goods_id"/>
+        <result column="emp_id" property="emp_id"/>
+        <result column="seller_emp_id" property="seller_emp_id"/>
+
+        <result column="PROVINCEID" property="provinceId"/>
+        <result column="CITYID" property="cityId"/>
+        <result column="AREAID" property="areaId"/>
+
+        <result column="address_id" property="address_id"/>
+        <result column="goods_count" property="goods_count"/>
+        <result column="payable_amount" property="payable_amount"/>
+        <result column="create_time" property="create_time"/>
+        <result column="pay_time" property="pay_time"/>
+        <result column="send_time" property="send_time"/>
+        <result column="accept_time" property="accept_time"/>
+        <result column="completion_time" property="completion_time"/>
+        <result column="status" property="status"/>
+        <result column="pay_status" property="pay_status"/>
+        <result column="distribution_type" property="distribution_type"/>
+        <result column="distribution_status" property="distribution_status"/>
+        <result column="postscript" property="postscript"/>
+        <result column="point" property="point"/>
+        <result column="trade_no" property="trade_no"/>
+        <result column="invoice" property="invoice"/>
+        <result column="invoice_title" property="invoice_title"/>
+        <result column="taxes" property="taxes"/>
+        <result column="out_trade_no" property="out_trade_no"/>
+        <result column="isAccount" property="isAccount"/>
+        <result column="trade_type" property="trade_type"/>
+        <result column="returnMsg" property="returnMsg"/>
+        <result column="returnOrder" property="returnOrder"/>
+
+        <result column="is_comment" property="is_comment"/>
+        <result column="is_return" property="is_return"/>
+        <result column="is_dxk_order" property="is_dxk_order"/>
+
+        <result column="payable_amount_all" property="payable_amount_all"/>
+        <result column="pv_amount" property="pv_amount"/>
+
+    </resultMap>
+
+    <resultMap id="orderVO" type="com.liangxunwang.unimanager.mvc.vo.OrderVo">
+        <id column="order_no" property="order_no"/>
+        <result column="goods_id" property="goods_id"/>
+        <result column="emp_id" property="emp_id"/>
+        <result column="seller_emp_id" property="seller_emp_id"/>
+        <result column="PROVINCEID" property="provinceId"/>
+        <result column="CITYID" property="cityId"/>
+        <result column="AREAID" property="areaId"/>
+        <result column="address_id" property="address_id"/>
+        <result column="goods_count" property="goods_count"/>
+        <result column="payable_amount" property="payable_amount"/>
+        <result column="create_time" property="create_time"/>
+        <result column="pay_time" property="pay_time"/>
+        <result column="send_time" property="send_time"/>
+        <result column="accept_time" property="accept_time"/>
+        <result column="completion_time" property="completion_time"/>
+        <result column="status" property="status"/>
+        <result column="pay_status" property="pay_status"/>
+        <result column="distribution_type" property="distribution_type"/>
+        <result column="distribution_status" property="distribution_status"/>
+        <result column="postscript" property="postscript"/>
+        <result column="point" property="point"/>
+        <result column="trade_no" property="trade_no"/>
+        <result column="invoice" property="invoice"/>
+        <result column="invoice_title" property="invoice_title"/>
+        <result column="taxes" property="taxes"/>
+        <result column="out_trade_no" property="out_trade_no"/>
+        <result column="isAccount" property="isAccount"/>
+
+        <result column="emp_cover" property="empCover"/>
+        <result column="emp_name" property="empName"/>
+        <result column="emp_mobile" property="empMobile"/>
+        <result column="goods_name" property="goodsTitle"/>
+        <result column="goods_cover" property="goodsCover"/>
+        <result column="SELL_PRICE" property="goodsPrice"/>
+        <result column="trade_type" property="trade_type"/>
+        <result column="returnMsg" property="returnMsg"/>
+        <result column="returnOrder" property="returnOrder"/>
+
+        <result column="is_comment" property="is_comment"/>
+        <result column="is_return" property="is_return"/>
+        <result column="is_dxk_order" property="is_dxk_order"/>
+
+        <result column="payable_amount_all" property="payable_amount_all"/>
+        <result column="pv_amount" property="pv_amount"/>
+
+    </resultMap>
+
+
+    <select id="listOrders" resultMap="orderVO">
+        SELECT ord.* ,le.emp_name as empName, le.emp_cover as empCover,le.EMP_MOBILE as empMobile ,lg.goods_name as goodsTitle,lg.goods_cover as goodsCover,lg.SELL_PRICE as goodsPrice from PAOPAO_SHOPPING_ORDER ord
+        LEFT JOIN lx_emp le ON ord.seller_emp_id=le.emp_id
+        LEFT JOIN PAOPAO_GOODS lg ON ord.goods_id=lg.goods_id
+        WHERE 1=1 AND ord.EMP_ID = #{emp_id} AND ord.STATUS !='4' AND ord.status != '1'
+        <if test="status != null and status != ''">
+            AND ord.status=#{status}
+        </if>
+        ORDER BY ord.create_time DESC
+        limit #{index},#{size}
+    </select>
+
+    <resultMap id="order_trade" type="com.liangxunwang.unimanager.model.ShoppingTrade">
+        <id column="out_trade_no" property="out_trade_no"/>
+        <result column="trade_prices" property="trade_prices"/>
+        <result column="pay_status" property="pay_status"/>
+        <result column="dateline" property="dateline"/>
+    </resultMap>
+
+    <insert id="saveTrade" parameterType="com.liangxunwang.unimanager.model.ShoppingTrade">
+        INSERT INTO PAOPAO_SHOPPINGTRADE(out_trade_no, trade_prices, pay_status, dateline)
+        VALUES (#{out_trade_no},#{trade_prices},#{pay_status},#{dateline})
+    </insert>
+
+    <insert id="saveList" parameterType="com.liangxunwang.unimanager.model.Order">
+        insert into PAOPAO_SHOPPING_ORDER (order_no, goods_id, emp_id,seller_emp_id, PROVINCEID, CITYID, AREAID, address_id, goods_count, payable_amount,create_time, pay_time, send_time, accept_time,completion_time, status, pay_status, distribution_type, distribution_status,postscript,point,trade_no,invoice,invoice_title,taxes,out_trade_no,isAccount,trade_type,payable_amount_all,is_dxk_order,pv_amount)
+        VALUES(#{order_no,jdbcType=VARCHAR},
+            #{goods_id,jdbcType=VARCHAR},
+            #{emp_id,jdbcType=VARCHAR},
+            #{seller_emp_id,jdbcType=VARCHAR},
+            #{provinceId,jdbcType=VARCHAR},
+            #{cityId,jdbcType=VARCHAR},
+            #{areaId,jdbcType=VARCHAR},
+            #{address_id,jdbcType=VARCHAR},
+            #{goods_count,jdbcType=VARCHAR},
+            #{payable_amount,jdbcType=VARCHAR},
+            #{create_time,jdbcType=VARCHAR},
+            #{pay_time,jdbcType=VARCHAR},
+            #{send_time,jdbcType=VARCHAR},
+            #{accept_time,jdbcType=VARCHAR},
+            #{completion_time,jdbcType=VARCHAR},
+            #{status,jdbcType=VARCHAR},
+            #{pay_status,jdbcType=VARCHAR},
+            #{distribution_type,jdbcType=VARCHAR},
+            #{distribution_status,jdbcType=VARCHAR},
+            #{postscript,jdbcType=VARCHAR},
+            #{point,jdbcType=VARCHAR},
+            #{trade_no,jdbcType=VARCHAR},
+            #{invoice,jdbcType=VARCHAR},
+            #{invoice_title,jdbcType=VARCHAR},
+            #{taxes,jdbcType=VARCHAR},
+            #{out_trade_no,jdbcType=VARCHAR},
+            #{isAccount,jdbcType=VARCHAR},
+            #{trade_type,jdbcType=VARCHAR},
+            #{payable_amount_all,jdbcType=VARCHAR},
+            #{is_dxk_order,jdbcType=VARCHAR},
+            #{pv_amount,jdbcType=VARCHAR}
+            )
+    </insert>
+
+    <update id="updateOrderByTradeId" parameterType="com.liangxunwang.unimanager.model.Order">
+        UPDATE  PAOPAO_SHOPPING_ORDER SET pay_time=#{pay_time},accept_time=#{pay_time},completion_time=#{pay_time}, status='5', pay_status='1' WHERE out_trade_no=#{out_trade_no}
+    </update>
+
+    <update id="updateOrderById" parameterType="com.liangxunwang.unimanager.model.Order">
+        UPDATE  PAOPAO_SHOPPING_ORDER SET pay_time=#{pay_time}, status='2', pay_status='1' WHERE out_trade_no=#{out_trade_no}
+    </update>
+
+    <update id="updateTradeById" parameterType="String">
+        UPDATE  PAOPAO_SHOPPINGTRADE SET pay_status='1' WHERE out_trade_no=#{out_trade_no}
+    </update>
+
+    <update id="cancelOrderById" parameterType="String">
+        UPDATE  PAOPAO_SHOPPING_ORDER SET  status='3'  WHERE order_no=#{order_no}
+    </update>
+
+    <select id="findOrderByTradeNo" resultMap="order">
+       SELECT  * from  PAOPAO_SHOPPING_ORDER  WHERE  out_trade_no = #{out_trade_no}
+    </select>
+
+    <select id="findOrderByOrderNo" resultMap="orderVO">
+        SELECT ord.* ,le.emp_name as empName, le.emp_cover as empCover,le.EMP_MOBILE as empMobile ,lg.goods_name as goodsTitle,lg.goods_cover as goodsCover,lg.SELL_PRICE as goodsPrice from PAOPAO_SHOPPING_ORDER ord
+            LEFT JOIN lx_emp le ON ord.EMP_ID=le.emp_id
+            LEFT JOIN PAOPAO_GOODS lg ON ord.goods_id=lg.goods_id
+            WHERE ord.order_no = #{order_no}
+    </select>
+
+    <update id="sureOrder" parameterType="com.liangxunwang.unimanager.model.Order">
+        UPDATE  PAOPAO_SHOPPING_ORDER SET  accept_time=#{accept_time}, completion_time=#{completion_time} , status='5'  WHERE order_no=#{order_no}
+    </update>
+
+    <update id="sendOrderSj" parameterType="com.liangxunwang.unimanager.model.Order">
+         UPDATE  PAOPAO_SHOPPING_ORDER SET  SEND_TIME=#{send_time}, distribution_status=#{distribution_status}, status='6'  WHERE order_no=#{order_no}
+    </update>
+
+    <update id="updateOrderBySingle" parameterType="String">
+        UPDATE PAOPAO_SHOPPING_ORDER SET pay_time=#{pay_time}, status='2', pay_status='1' WHERE order_no=#{order_no}
+    </update>
+
+    <update id="updateOrderReturn" parameterType="com.liangxunwang.unimanager.model.Order">
+        UPDATE PAOPAO_SHOPPING_ORDER SET status='7' ,returnMsg=#{returnMsg,jdbcType=VARCHAR}, returnOrder=#{returnOrder,jdbcType=VARCHAR}, pay_status='2',is_return='0'
+        WHERE  order_no=#{order_no}
+    </update>
+
+    <update id="updateOrderReturnDone" parameterType="String">
+        UPDATE PAOPAO_SHOPPING_ORDER SET status= #{status} WHERE order_no=#{order_no}
+    </update>
+
+    <select id="selectOrderNum" resultType="long">
+        SELECT COUNT(*) from PAOPAO_SHOPPING_ORDER WHERE 1='1'
+        <if test="emp_id != null and emp_id != ''">
+            AND SELLER_EMP_ID = #{emp_id}
+        </if>
+    </select>
+
+    <select id="selectOrderNumByDay" resultType="long">
+        SELECT COUNT(*) from PAOPAO_SHOPPING_ORDER WHERE 1='1'
+        <if test="emp_id != null and emp_id != ''">
+            AND SELLER_EMP_ID = #{emp_id}
+        </if>
+        <if test="start != null and start != ''">
+            AND PAY_TIME &gt;= #{start}
+        </if>
+        <if test="end != null and end != ''">
+            AND PAY_TIME &lt;= #{end}
+        </if>
+    </select>
+
+    <select id="selectSum" resultType="String">
+        SELECT sum(PAYABLE_AMOUNT) from PAOPAO_SHOPPING_ORDER WHERE 1='1'
+        <if test="emp_id != null and emp_id != ''">
+            AND SELLER_EMP_ID = #{emp_id}
+        </if>
+        <if test="start != null and start != ''">
+            AND PAY_TIME &gt;= #{start}
+        </if>
+        <if test="end != null and end != ''">
+            AND PAY_TIME &lt;= #{end}
+        </if>
+        AND PAY_STATUS = '1'
+    </select>
+
+    <select id="listOrdersSj" resultMap="orderVO">
+            SELECT ord.* ,le.emp_name as empName, le.emp_cover as empCover,le.EMP_MOBILE as empMobile ,lg.goods_name as goodsTitle,lg.goods_cover as goodsCover,lg.SELL_PRICE as goodsPrice from PAOPAO_SHOPPING_ORDER ord
+            LEFT JOIN lx_emp le ON ord.EMP_ID=le.emp_id
+            LEFT JOIN PAOPAO_GOODS lg ON ord.goods_id=lg.goods_id
+
+            WHERE 1=1 AND ord.seller_emp_id = #{emp_id}
+            <if test="status != null and status != ''">
+                AND ord.status=#{status}
+            </if>
+            ORDER BY ord.create_time DESC
+
+        limit #{index},#{size}
+    </select>
+
+    <update id="deleteOrderById" parameterType="String">
+        UPDATE  PAOPAO_SHOPPING_ORDER SET  status='4'  WHERE order_no=#{order_no}
+    </update>
+
+
+    <insert id="saveDxkOrder" parameterType="com.liangxunwang.unimanager.model.Order">
+        insert into PAOPAO_SHOPPING_ORDER (order_no, emp_id, seller_emp_id, payable_amount, create_time, pay_time, status, is_dxk_order, pay_status)
+        VALUES(#{order_no,jdbcType=VARCHAR},
+        #{emp_id,jdbcType=VARCHAR},
+        #{seller_emp_id,jdbcType=VARCHAR},
+        #{payable_amount,jdbcType=VARCHAR},
+        #{create_time,jdbcType=VARCHAR},
+        #{pay_time,jdbcType=VARCHAR},
+        #{status,jdbcType=VARCHAR},
+        #{is_dxk_order,jdbcType=VARCHAR},
+        #{pay_status,jdbcType=VARCHAR}
+        )
+    </insert>
+
+    <update id="updateIsComment" parameterType="String">
+        UPDATE PAOPAO_SHOPPING_ORDER SET is_comment='1'  WHERE order_no=#{order_no}
+    </update>
+
+    <select id="findIsExist" resultMap="order">
+        SELECT * from PAOPAO_SHOPPING_ORDER
+        WHERE is_dxk_order = '1' AND create_time &gt; #{startTime} AND create_time &lt; #{endTime}
+        <if test="emp_id != null and emp_id != ''">
+            AND emp_id = #{emp_id}
+        </if>
+        <if test="seller_emp_id != null and seller_emp_id != ''">
+            AND seller_emp_id = #{seller_emp_id}
+        </if>
+    </select>
+
+
+    <update id="updateOrderByOrderNo" parameterType="com.liangxunwang.unimanager.model.Order">
+        UPDATE PAOPAO_SHOPPING_ORDER SET status= #{status}  WHERE order_no= #{order_no}
+    </update>
+
+</mapper>

@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.LxCardObjDao">
+    <resultMap id="lxCardObj" type="com.liangxunwang.unimanager.model.LxCardObj">
+        <id column="lx_card_id" property="lx_card_id"/>
+        <result column="lx_card_count" property="lx_card_count"/>
+        <result column="lx_card_dijian" property="lx_card_dijian"/>
+        <result column="lx_card_low" property="lx_card_low"/>
+    </resultMap>
+
+    <select id="lists" resultMap="lxCardObj">
+        SELECT * from lx_card
+    </select>
+
+    <select id="findById" parameterType="String" resultMap="lxCardObj">
+        SELECT * FROM lx_card where lx_card_id=#{lx_card_id}
+    </select>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.LxCardObj">
+        UPDATE lx_card SET lx_card_count=#{lx_card_count},
+        lx_card_dijian=#{lx_card_dijian},
+        lx_card_low=#{lx_card_low}
+        WHERE lx_card_id=#{lx_card_id}
+    </update>
+</mapper>

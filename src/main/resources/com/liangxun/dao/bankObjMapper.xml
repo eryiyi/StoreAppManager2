@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.BankObjDao">
+    <resultMap id="bankObj" type="com.liangxunwang.unimanager.model.BankObj">
+        <id column="bank_id" property="bank_id"/>
+        <result column="emp_id" property="emp_id"/>
+        <result column="bank_mobile" property="bank_mobile"/>
+        <result column="bank_emp_name" property="bank_emp_name"/>
+        <result column="bank_kaihu_name" property="bank_kaihu_name"/>
+        <result column="bank_name" property="bank_name"/>
+        <result column="bank_card" property="bank_card"/>
+        <result column="dateline" property="dateline"/>
+        <result column="is_use" property="is_use"/>
+    </resultMap>
+
+    <select id="lists" resultMap="bankObj">
+        SELECT * from lx_bank
+        WHERE is_use = 0
+        <if test="emp_id != null and emp_id != ''">
+            AND emp_id = #{emp_id}
+        </if>
+        ORDER BY dateline DESC
+    </select>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.BankObj">
+        INSERT INTO lx_bank(bank_id, emp_id, bank_card, dateline,bank_mobile,bank_emp_name,bank_kaihu_name,bank_name)
+        VALUES (#{bank_id}, #{emp_id}, #{bank_card}, #{dateline}, #{bank_mobile}, #{bank_emp_name}, #{bank_kaihu_name}, #{bank_name})
+    </insert>
+
+    <!--<delete id="delete" parameterType="String">-->
+        <!--DELETE FROM lx_bank where bank_id = #{bank_id}-->
+    <!--</delete>-->
+
+    <select id="findById" parameterType="String" resultMap="bankObj">
+        SELECT * FROM lx_bank where bank_id=#{bank_id}
+    </select>
+
+    <update id="delete" parameterType="String">
+        UPDATE lx_bank set is_use = '1' WHERE bank_id = #{bank_id}
+    </update>
+
+
+</mapper>

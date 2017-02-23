@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.KefuTelDao">
+    <resultMap id="kefu" type="com.liangxunwang.unimanager.model.KefuTel">
+        <id column="mm_tel_id" property="mm_tel_id"/>
+        <result column="mm_tel" property="mm_tel"/>
+        <result column="mm_name" property="mm_name"/>
+        <result column="mm_cover" property="mm_cover"/>
+        <result column="mm_tel_type" property="mm_tel_type"/>
+        <result column="top_num" property="top_num"/>
+    </resultMap>
+
+    <select id="lists" resultMap="kefu">
+        SELECT sn.* from mm_tel sn
+        WHERE  1=1
+        <if test="mm_tel_type != null and mm_tel_type != ''">
+            AND sn.mm_tel_type = #{mm_tel_type}
+        </if>
+        ORDER by sn.top_num DESC
+    </select>
+
+    <select id="listsAll" resultMap="kefu">
+        SELECT sn.* from mm_tel sn
+        WHERE  1=1
+        <if test="mm_tel_type != null and mm_tel_type != ''">
+            AND sn.mm_tel_type = #{mm_tel_type}
+        </if>
+        ORDER by sn.top_num DESC
+    </select>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.KefuTel">
+        INSERT INTO mm_tel(mm_tel_id, mm_tel,mm_cover,mm_name,mm_tel_type,top_num)
+        VALUES (#{mm_tel_id}, #{mm_tel}, #{mm_cover,jdbcType=VARCHAR}, #{mm_name,jdbcType=VARCHAR}, #{mm_tel_type,jdbcType=VARCHAR}, #{top_num,jdbcType=VARCHAR})
+    </insert>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.KefuTel">
+        UPDATE mm_tel SET
+        mm_name=#{mm_name,jdbcType=VARCHAR},
+        mm_cover=#{mm_cover,jdbcType=VARCHAR},
+        mm_tel_type=#{mm_tel_type,jdbcType=VARCHAR},
+        top_num=#{top_num,jdbcType=VARCHAR},
+        top_num=#{top_num,jdbcType=VARCHAR},
+        mm_tel=#{mm_tel}
+        WHERE mm_tel_id=#{mm_tel_id}
+    </update>
+
+    <delete id="delete" parameterType="String">
+        DELETE FROM mm_tel where mm_tel_id = #{mm_tel_id}
+    </delete>
+
+    <select id="findById" parameterType="String" resultMap="kefu">
+        SELECT sn.*
+        FROM mm_tel sn
+        where sn.mm_tel_id=#{mm_tel_id}
+    </select>
+
+</mapper>

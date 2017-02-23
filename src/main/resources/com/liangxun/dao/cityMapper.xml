@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.AppCityDao">
+    <resultMap id="city" type="com.liangxunwang.unimanager.model.City">
+        <id column="cid" property="cid"/>
+        <result column="cityid" property="cityid"/>
+        <result column="areaid" property="areaid"/>
+        <result column="cityName" property="cityName"/>
+    </resultMap>
+
+    <select id="list" resultMap="city">
+        SELECT * from  city  WHERE 1=1
+        <if test="areaid != null and areaid != ''">
+            AND areaid = #{areaid}
+        </if>
+        <if test="cityName != null and cityName != ''">
+            AND cityName like like CONCAT('%',#{cityName},'%')
+        </if>
+    </select>
+
+</mapper>

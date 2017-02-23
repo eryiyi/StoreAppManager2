@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.ManagerEmpDao">
+    <resultMap id="my_manager_emp" type="com.liangxunwang.unimanager.model.ManagerEmp">
+        <id column="me_id" property="id"/>
+        <result column="me_empid" property="empId"/>
+        <result column="me_admin" property="admin"/>
+        <result column="me_start" property="start"/>
+        <result column="me_end" property="end"/>
+        <result column="me_dateline" property="dateline"/>
+    </resultMap>
+    <resultMap id="my_manager_emp_vo" type="com.liangxunwang.unimanager.mvc.vo.ManagerEmpVO">
+        <id column="me_id" property="id"/>
+        <result column="me_empid" property="empId"/>
+        <result column="me_admin" property="admin"/>
+        <result column="me_start" property="start"/>
+        <result column="me_end" property="end"/>
+        <result column="me_dateline" property="dateline"/>
+        <result column="emp_nick_name" property="empNickName"/>
+    </resultMap>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.ManagerEmp">
+        INSERT INTO manager_emp(me_id, me_empid, me_admin,me_start , me_end, me_dateline)
+        VALUES (#{id}, #{empId}, #{admin}, #{start}, #{end}, #{dateline})
+    </insert>
+
+    <select id="list" resultMap="my_manager_emp_vo" parameterType="String">
+        SELECT me.*,le.emp_name as emp_nick_name FROM manager_emp me
+        LEFT JOIN lx_emp le ON me.me_empid=le.emp_id
+        ORDER BY ME_DATELINE DESC
+    </select>
+
+    <select id="findByEmpId" resultMap="my_manager_emp" parameterType="String">
+        SELECT * FROM manager_emp WHERE me_empid=#{empId}
+    </select>
+
+    <delete id="delete" parameterType="String">
+        DELETE FROM manager_emp WHERE me_empid=#{empId}
+    </delete>
+
+    <select id="listOpen" resultMap="my_manager_emp" parameterType="String">
+        SELECT * FROM manager_emp WHERE me_end &lt; #{nowTime}
+    </select>
+
+    <delete id="systemOpenEmp" parameterType="String">
+        DELETE FROM manager_emp WHERE me_end &lt; #{nowTime}
+    </delete>
+</mapper>

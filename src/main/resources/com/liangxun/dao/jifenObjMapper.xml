@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.JifenObjDao">
+    <resultMap id="jifen" type="com.liangxunwang.unimanager.model.JifenObj">
+        <id column="lx_jifen_id" property="lx_jifen_id"/>
+        <result column="lx_jifen_one" property="lx_jifen_one"/>
+        <result column="lx_jifen_two" property="lx_jifen_two"/>
+    </resultMap>
+
+    <select id="findById" parameterType="String" resultMap="jifen">
+        SELECT * FROM lx_jifen where lx_jifen_id=#{lx_jifen_id}
+    </select>
+
+    <select id="list" resultMap="jifen">
+        SELECT * FROM lx_jifen
+    </select>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.JifenObj">
+        UPDATE lx_jifen SET lx_jifen_one=#{lx_jifen_one},
+        lx_jifen_two=#{lx_jifen_two}
+         WHERE lx_jifen_id=#{lx_jifen_id}
+    </update>
+</mapper>

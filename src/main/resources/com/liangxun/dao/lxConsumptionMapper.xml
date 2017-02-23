@@ -1,0 +1,67 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.LxConsumptionDao">
+    <resultMap id="lxConsumption" type="com.liangxunwang.unimanager.model.LxConsumption">
+        <id column="lx_consumption_id" property="lx_consumption_id"/>
+        <result column="lx_consumption_cont" property="lx_consumption_cont"/>
+        <result column="lx_consumption_count" property="lx_consumption_count"/>
+        <result column="lx_consumption_type" property="lx_consumption_type"/>
+        <result column="dateline" property="dateline"/>
+        <result column="order_no" property="order_no"/>
+        <result column="emp_id" property="emp_id"/>
+
+        <result column="emp_mobile" property="emp_mobile"/>
+        <result column="emp_name" property="emp_name"/>
+        <result column="emp_cover" property="emp_cover"/>
+    </resultMap>
+
+    <select id="lists" resultMap="lxConsumption">
+        SELECT sn.*,lemp.emp_mobile as emp_mobile, lemp.emp_name as emp_name, lemp.emp_cover as emp_cover  from lx_consumption sn
+        LEFT JOIN lx_emp lemp ON lemp.emp_id = sn.emp_id
+        WHERE 1=1
+        <if test="phoneNumber != null and phoneNumber != ''">
+            AND lemp.emp_mobile=#{phoneNumber}
+        </if>
+
+        <if test="keyWords != null and keyWords != ''">
+            AND lemp.emp_name like CONCAT('%',#{keyWords},'%')
+        </if>
+        <if test="emp_id != null and emp_id != ''">
+            AND lemp.emp_id like CONCAT('%',#{emp_id},'%')
+        </if>
+
+        ORDER BY sn.dateline DESC
+        limit #{index},#{size}
+    </select>
+
+    <select id="count" resultType="long">
+        select count(le.emp_id) from lx_consumption le
+        LEFT JOIN lx_emp lemp ON lemp.emp_id = le.emp_id
+        <if test="phoneNumber != null and phoneNumber != ''">
+            AND lemp.emp_mobile=#{phoneNumber}
+        </if>
+        <if test="keyWords != null and keyWords != ''">
+            AND lemp.emp_name like CONCAT('%',#{keyWords},'%')
+        </if>
+        <if test="emp_id != null and emp_id != ''">
+            AND lemp.emp_id like CONCAT('%',#{emp_id},'%')
+        </if>
+    </select>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.LxConsumption">
+        INSERT INTO lx_consumption(lx_consumption_id, lx_consumption_cont, lx_consumption_count, lx_consumption_type, dateline, order_no, emp_id)
+        VALUES (#{lx_consumption_id}, #{lx_consumption_cont}, #{lx_consumption_count}, #{lx_consumption_type}, #{dateline}, #{order_no,jdbcType=VARCHAR}, #{emp_id})
+    </insert>
+
+    <select id="findById" parameterType="String" resultMap="lxConsumption">
+        SELECT sn.*,lemp.emp_mobile as emp_mobile, lemp.emp_name as emp_name, lemp.emp_cover as emp_cover
+         FROM lx_consumption  sn
+           LEFT JOIN lx_emp lemp ON lemp.emp_id = sn.emp_id
+         where sn.lx_consumption_id=#{lx_consumption_id}
+    </select>
+
+
+
+</mapper>

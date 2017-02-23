@@ -1,0 +1,51 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.LxClassDao">
+
+    <resultMap id="lxclass" type="com.liangxunwang.unimanager.model.LxClass">
+        <id column="lx_class_id" property="lx_class_id"/>
+        <result column="lx_class_name" property="lx_class_name"/>
+        <result column="lx_class_content" property="lx_class_content"/>
+        <result column="top_number" property="top_number"/>
+        <result column="lx_class_cover" property="lx_class_cover"/>
+        <result column="is_del" property="is_del"/>
+        <result column="f_lx_class_id" property="f_lx_class_id"/>
+    </resultMap>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.LxClass">
+        INSERT INTO lx_class(lx_class_id, lx_class_name, lx_class_content, top_number, lx_class_cover , f_lx_class_id )
+         VALUES (#{lx_class_id}, #{lx_class_name}, #{lx_class_content, jdbcType=VARCHAR}, #{top_number}, #{lx_class_cover, jdbcType=VARCHAR}, #{f_lx_class_id, jdbcType=VARCHAR})
+    </insert>
+
+    <select id="list" resultMap="lxclass">
+        SELECT sn.* FROM lx_class sn
+        WHERE 1=1
+        <if test="lx_class_id != null and lx_class_id != ''">
+            AND sn.lx_class_id=#{lx_class_id}
+        </if>
+        <if test="f_lx_class_id != null and f_lx_class_id != ''">
+            AND sn.f_lx_class_id=#{f_lx_class_id}
+        </if>
+        <if test="is_del != null and is_del != ''">
+            AND sn.is_del=#{is_del}
+        </if>
+        ORDER by sn.top_number DESC
+    </select>
+
+    <select id="findById" parameterType="String" resultMap="lxclass">
+        SELECT * FROM lx_class where lx_class_id=#{lx_class_id}
+    </select>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.LxClass">
+        UPDATE lx_class SET lx_class_name=#{lx_class_name}, lx_class_content=#{lx_class_content, jdbcType=VARCHAR},f_lx_class_id=#{f_lx_class_id, jdbcType=VARCHAR},
+         top_number=#{top_number}, lx_class_cover=#{lx_class_cover} , is_del=#{is_del}  WHERE lx_class_id=#{lx_class_id}
+    </update>
+
+
+    <delete id="deleteById">
+        DELETE FROM lx_class WHERE lx_class_id=#{lx_class_id}
+    </delete>
+
+</mapper>

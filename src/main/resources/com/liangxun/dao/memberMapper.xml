@@ -1,0 +1,354 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.MemberDao">
+    <resultMap id="my_member" type="com.liangxunwang.unimanager.model.Member">
+        <id column="emp_id" property="empId"/>
+        <result column="emp_mobile" property="empMobile"/>
+        <result column="emp_pass" property="empPass"/>
+        <result column="emp_name" property="empName"/>
+        <result column="emp_cover" property="empCover"/>
+        <result column="emp_sex" property="empSex"/>
+        <result column="is_use" property="isUse"/>
+        <result column="dateline" property="dateline"/>
+        <result column="push_id" property="pushId"/>
+        <result column="hx_username" property="hxUsername"/>
+        <result column="is_in_group" property="isInGroup"/>
+        <result column="device_type" property="deviceType"/>
+        <result column="emp_number" property="emp_number"/>
+        <result column="empType" property="empType"/>
+        <result column="emp_pay_pass" property="emp_pay_pass"/>
+        <result column="channelId" property="channelId"/>
+
+        <result column="emp_birthday" property="emp_birthday"/>
+        <result column="lat" property="lat"/>
+        <result column="lng" property="lng"/>
+        <result column="level_id" property="level_id"/>
+        <result column="emp_erweima" property="emp_erweima"/>
+        <result column="emp_up" property="emp_up"/>
+        <result column="package_money" property="package_money"/>
+        <result column="jfcount" property="jfcount"/>
+        <result column="lx_dxk_level_id" property="lx_dxk_level_id"/>
+    </resultMap>
+
+    <resultMap id="my_member_vo" type="com.liangxunwang.unimanager.mvc.vo.MemberVO">
+        <id column="emp_id" property="empId"/>
+        <result column="emp_mobile" property="empMobile"/>
+        <result column="emp_pass" property="empPass"/>
+        <result column="emp_name" property="empName"/>
+        <result column="emp_cover" property="empCover"/>
+        <result column="emp_sex" property="empSex"/>
+        <result column="is_use" property="isUse"/>
+        <result column="dateline" property="dateline"/>
+        <result column="push_id" property="pushId"/>
+        <result column="hx_username" property="hxUsername"/>
+        <result column="is_in_group" property="isInGroup"/>
+        <result column="device_type" property="deviceType"/>
+        <result column="empType" property="empType"/>
+        <result column="emp_number" property="emp_number"/>
+        <result column="channelId" property="channelId"/>
+
+        <result column="emp_birthday" property="emp_birthday"/>
+        <result column="lat" property="lat"/>
+        <result column="lng" property="lng"/>
+        <result column="level_id" property="level_id"/>
+        <result column="emp_erweima" property="emp_erweima"/>
+        <result column="emp_up" property="emp_up"/>
+        <result column="emp_pay_pass" property="emp_pay_pass"/>
+
+        <result column="jfcount" property="jfcount"/>
+        <result column="levelName" property="levelName"/>
+        <result column="emp_mobile_up" property="emp_mobile_up"/>
+        <result column="emp_name_up" property="emp_name_up"/>
+        <result column="package_money" property="package_money"/>
+
+        <result column="lx_dxk_level_id" property="lx_dxk_level_id"/>
+        <result column="lx_dxk_name" property="lx_dxk_name"/>
+        <result column="level_zhe" property="level_zhe"/>
+    </resultMap>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.Member">
+        INSERT INTO lx_emp(emp_id, emp_mobile, emp_pass, emp_name, emp_cover, emp_sex, is_use, dateline,hx_username,level_id,emp_up, emp_number)
+        VALUES (#{empId}, #{empMobile}, #{empPass,jdbcType=VARCHAR}, #{emp_number},
+        #{empCover}, #{empSex}, #{isUse}, #{dateline},#{hxUsername},#{level_id, jdbcType=VARCHAR},#{emp_up ,jdbcType=VARCHAR},#{emp_number ,jdbcType=VARCHAR})
+    </insert>
+
+    <select id="findByMobile" parameterType="String" resultMap="my_member_vo">
+        SELECT lp.*,ll.level_name as levelName,ll.level_zhe as level_zhe,
+          lc.count as jfcount,lpac.package_money as package_money
+         from lx_emp lp
+         LEFT JOIN lx_level ll ON ll.level_id = lp.level_id
+          LEFT JOIN lx_count lc ON lc.emp_id = lp.emp_id
+          LEFT JOIN lx_package lpac ON lpac.emp_id = lp.emp_id
+          WHERE lp.emp_mobile=#{mobile} OR lp.emp_number = #{emp_number}
+    </select>
+
+    <select id="findInfoById" parameterType="String" resultMap="my_member_vo">
+        SELECT lp.* , ll.level_name as levelName, ll.level_zhe as level_zhe,
+        lc.count as jfcount,lempUp.emp_mobile as emp_mobile_up ,lempUp.emp_name as emp_name_up,lpac.package_money as package_money
+        from lx_emp lp
+        LEFT JOIN lx_level ll ON ll.level_id = lp.level_id
+        LEFT JOIN lx_count lc ON lc.emp_id = lp.emp_id
+           LEFT JOIN lx_emp lempUp ON lempUp.emp_id = lp.emp_up
+           LEFT JOIN lx_package lpac ON lpac.emp_id = lp.emp_id
+        WHERE lp.emp_id=#{empId}
+    </select>
+
+    <select id="findByPhone" resultMap="my_member" parameterType="String">
+        SELECT sn.* ,lpac.package_money as package_money
+        FROM lx_emp sn
+         LEFT JOIN lx_package lpac ON lpac.emp_id = sn.emp_id
+         WHERE sn.emp_mobile=#{mobile}
+    </select>
+
+    <select id="findById" parameterType="String" resultMap="my_member">
+        SELECT sn.*,lpac.package_money as package_money
+         FROM lx_emp sn
+          LEFT JOIN lx_package lpac ON lpac.emp_id = sn.emp_id
+          WHERE sn.emp_id=#{id}
+    </select>
+
+    <select id="list" resultMap="my_member_vo">
+          SELECT le.*,ll.level_name as levelName,ll.level_zhe as level_zhe,
+        lempUp.emp_mobile as emp_mobile_up ,lempUp.emp_name as emp_name_up
+        ,lc.count as jfcount,lpac.package_money as package_money,ldxk.lx_dxk_name as lx_dxk_name
+            from lx_emp le
+          LEFT JOIN lx_level ll ON ll.level_id = le.level_id
+          LEFT JOIN lx_emp lempUp ON lempUp.emp_id = le.emp_up
+          LEFT JOIN lx_count lc ON lc.emp_id = le.emp_id
+          LEFT JOIN lx_package lpac ON lpac.emp_id = le.emp_id
+          LEFT JOIN lx_dxk_level ldxk ON ldxk.lx_dxk_level_id = le.lx_dxk_level_id
+          WHERE 1=1
+            <if test="phoneNumber != null and phoneNumber != ''">
+                AND le.emp_mobile like CONCAT('%',#{phoneNumber},'%')
+            </if>
+            <if test="emp_up != null and emp_up != ''">
+                AND le.emp_up=#{emp_up}
+            </if>
+            <if test="level_id != null and level_id != ''">
+                AND le.level_id=#{level_id}
+            </if>
+            <if test="is_use != null and is_use != ''">
+                AND le.is_use=#{is_use}
+            </if>
+           <if test="lx_dxk_level_id != null and lx_dxk_level_id != ''">
+                AND le.lx_dxk_level_id=#{lx_dxk_level_id}
+            </if>
+
+          <if test="lx_attribute_id != null and lx_attribute_id != ''">
+                AND le.lx_attribute_id=#{lx_attribute_id}
+            </if>
+
+            <if test="keyWords != null and keyWords != ''">
+                AND le.emp_name like CONCAT('%',#{keyWords},'%')
+            </if>
+            ORDER BY le.dateline DESC
+            limit #{index},#{size}
+    </select>
+
+    <select id="count" resultType="long">
+        select count(le.emp_id) from lx_emp le
+        LEFT JOIN lx_level ll ON ll.level_id = le.level_id
+        LEFT JOIN lx_emp lempUp ON lempUp.emp_id = le.emp_up
+        LEFT JOIN lx_count lc ON lc.emp_id = le.emp_id
+        LEFT JOIN lx_package lpac ON lpac.emp_id = le.emp_id
+        LEFT JOIN lx_dxk_level ldxk ON ldxk.lx_dxk_level_id = le.lx_dxk_level_id
+        WHERE 1=1
+        <if test="emp_up != null and emp_up != ''">
+            AND le.emp_up=#{emp_up}
+        </if>
+
+        <if test="phoneNumber != null and phoneNumber != ''">
+            AND le.emp_mobile like CONCAT('%',#{phoneNumber},'%')
+        </if>
+
+        <if test="level_id != null and level_id != ''">
+            AND le.level_id=#{level_id}
+        </if>
+        <if test="is_use != null and is_use != ''">
+            AND le.is_use=#{is_use}
+        </if>
+        <if test="lx_dxk_level_id != null and lx_dxk_level_id != ''">
+            AND le.lx_dxk_level_id=#{lx_dxk_level_id}
+        </if>
+
+        <if test="lx_attribute_id != null and lx_attribute_id != ''">
+            AND le.lx_attribute_id=#{lx_attribute_id}
+        </if>
+
+        <if test="keyWords != null and keyWords != ''">
+            AND le.emp_name like CONCAT('%',#{keyWords},'%')
+        </if>
+
+    </select>
+
+    <select id="memberCount" resultType="long">
+        SELECT COUNT(emp_id) FROM lx_emp
+    </select>
+
+    <select id="memberCountDxk" resultType="long">
+        SELECT COUNT(emp_id) FROM lx_emp WHERE is_card_emp = '1'
+    </select>
+
+    <select id="countDay" resultType="Long">
+        SELECT count(sn.emp_id) FROM lx_emp sn
+        WHERE 1=1
+        AND sn.dateline &gt; #{startTime}
+        AND sn.dateline &lt; #{endTime}
+    </select>
+
+    <select id="countDayDxk" resultType="Long">
+        SELECT count(sn.emp_id) FROM lx_emp sn
+        WHERE 1=1 AND is_card_emp = '1'
+        AND sn.dateline &gt; #{startTime}
+        AND sn.dateline &lt; #{endTime}
+    </select>
+
+    <select id="memberCountById" resultType="long">
+        SELECT COUNT(emp_id) FROM lx_emp  WHERE school_id= #{school_id}
+    </select>
+
+    <select id="closeMemberCount" resultType="long">
+        SELECT COUNT(emp_id) FROM lx_emp WHERE is_use='1'
+    </select>
+
+
+    <select id="findByNumber" resultMap="my_member" parameterType="String">
+        SELECT * FROM lx_emp WHERE emp_number=#{emp_number}
+    </select>
+
+    <select id="findMemberByNickName" resultMap="my_member" parameterType="String">
+        SELECT * from lx_emp WHERE emp_name=#{nickName}
+        <if test="empId != null and empId !=''">
+        AND emp_id &lt;&gt; #{empId}
+        </if>
+    </select>
+
+    <update id="closeMember" parameterType="String">
+        UPDATE lx_emp set is_use='1' WHERE emp_id=#{empId}
+    </update>
+
+    <update id="openMember" parameterType="String">
+        UPDATE lx_emp set is_use='0' WHERE emp_id=#{empId}
+    </update>
+
+    <update id="modifyMember" parameterType="com.liangxunwang.unimanager.model.Member">
+        UPDATE lx_emp SET  emp_cover=#{empCover}  WHERE emp_id=#{empId}
+    </update>
+
+    <update id="modifyMemberNoCover" parameterType="com.liangxunwang.unimanager.model.Member">
+        UPDATE lx_emp SET emp_name=#{empName}   WHERE emp_id=#{empId}
+    </update>
+
+    <update id="modifyMemberSex" parameterType="com.liangxunwang.unimanager.model.Member">
+        UPDATE lx_emp SET emp_sex=#{empSex}   WHERE emp_id=#{empId}
+    </update>
+
+    <update id="modifyMemberBirth" parameterType="com.liangxunwang.unimanager.model.Member">
+        UPDATE lx_emp SET emp_birthday=#{emp_birthday}   WHERE emp_id=#{empId}
+    </update>
+
+    <update id="resetPayPass" parameterType="com.liangxunwang.unimanager.model.Member">
+        UPDATE lx_emp SET emp_pay_pass=#{emp_pay_pass} WHERE emp_id=#{empId}
+    </update>
+
+    <update id="updatePassword" parameterType="String">
+        UPDATE lx_emp SET emp_pass=#{password} WHERE emp_mobile=#{mobile}
+    </update>
+
+    <update id="updatePasswordPay" parameterType="String">
+        UPDATE lx_emp SET emp_pay_pass=#{password} WHERE emp_mobile=#{mobile}
+    </update>
+
+    <update id="updatePushId" parameterType="String">
+        UPDATE lx_emp set push_id=#{pushId}, device_type=#{type}, channelId=#{channelId} WHERE emp_id=#{id}
+    </update>
+
+
+    <update id="resetEmpLocation" parameterType="com.liangxunwang.unimanager.model.Member">
+        UPDATE lx_emp SET lat=#{lat}, lng = #{lng} WHERE emp_id=#{empId}
+    </update>
+
+    <update id="resetPass" parameterType="String">
+        UPDATE lx_emp SET emp_pass=#{rePass} WHERE emp_id=#{empId}
+    </update>
+
+    <update id="resetMobile" parameterType="String">
+        UPDATE lx_emp SET emp_mobile=#{reMobile} WHERE emp_id=#{empId}
+    </update>
+
+    <select id="searchMember" resultMap="my_member" parameterType="String">
+        select * from lx_emp where emp_mobile=#{keyWords} or emp_name like CONCAT('%',#{keyWords},'%')
+    </select>
+
+    <select id="searchMemberByPage" resultMap="my_member">
+        select * from lx_emp where '1'='1'
+        <if test="keyWords != null and keyWords != ''">
+            AND emp_mobile=#{keyWords} or emp_name like CONCAT('%',#{keyWords},'%')
+        </if>
+        limit #{index},#{size}
+    </select>
+
+    <select id="listMemberBySchool" parameterType="String" resultMap="my_member">
+        SELECT EMP_ID, EMP_COVER, EMP_NAME,EMP_MOBILE,HX_USERNAME FROM LX_EMP
+    </select>
+
+    <update id="updateMemberById" parameterType="com.liangxunwang.unimanager.model.Member">
+        UPDATE lx_emp SET
+        emp_name=#{empName},
+        emp_sex=#{empSex},
+        emp_cover=#{empCover},
+        level_id=#{level_id},
+        lx_attribute_id=#{lx_attribute_id,jdbcType=VARCHAR},
+        lx_dxk_level_id=#{lx_dxk_level_id,jdbcType=VARCHAR},
+        is_card_emp=#{is_card_emp,jdbcType=VARCHAR},
+        is_use=#{isUse}
+        WHERE emp_id=#{empId}
+    </update>
+
+    <update id="updateMemberDxkById" parameterType="com.liangxunwang.unimanager.model.Member">
+        UPDATE lx_emp SET
+        is_card_emp=#{is_card_emp}
+        WHERE emp_id=#{empId}
+    </update>
+
+    <update id="updateType" parameterType="String">
+        UPDATE lx_emp SET empType=#{empType} WHERE emp_id=#{emp_id}
+    </update>
+
+    <update id="updateEmpUp" parameterType="String">
+        UPDATE lx_emp SET emp_up=#{emp_up} WHERE emp_id=#{emp_id}
+    </update>
+
+    <select id="listAllFensi" statementType="CALLABLE" resultMap="my_member_vo" parameterType="java.util.Map">
+        <![CDATA[
+        {call showChildLst(#{param1,mode=IN,jdbcType=VARCHAR})}
+        ]]>
+    </select>
+
+    <select id="findAll" statementType="CALLABLE" resultMap="my_member_vo" parameterType="java.util.Map">
+        <![CDATA[
+    		{call pagination(#{param1,mode=IN,jdbcType=INTEGER},#{param2,mode=IN,jdbcType=INTEGER},#{param3,mode=IN,jdbcType=VARCHAR}
+    		,#{param4,mode=IN,jdbcType=VARCHAR},#{param5,mode=IN,jdbcType=VARCHAR},#{param6,jdbcType=INTEGER,mode=OUT}
+    		)}
+		]]>
+    </select>
+
+    <select id="listAllFensiEmp" resultMap="my_member_vo">
+        SELECT le.*,ll.level_name as levelName,ll.level_zhe as level_zhe,
+        lempUp.emp_mobile as emp_mobile_up ,lempUp.emp_name as emp_name_up
+        ,lc.count as jfcount,lpac.package_money as package_money,ldxk.lx_dxk_name as lx_dxk_name
+        from lx_emp le
+        LEFT JOIN lx_level ll ON ll.level_id = le.level_id
+        LEFT JOIN lx_emp lempUp ON lempUp.emp_id = le.emp_up
+        LEFT JOIN lx_count lc ON lc.emp_id = le.emp_id
+        LEFT JOIN lx_package lpac ON lpac.emp_id = le.emp_id
+        LEFT JOIN lx_dxk_level ldxk ON ldxk.lx_dxk_level_id = le.lx_dxk_level_id
+        WHERE 1=1
+        <if test="emp_up != null and emp_up != ''">
+            AND le.emp_up=#{emp_up}
+        </if>
+    </select>
+
+</mapper>

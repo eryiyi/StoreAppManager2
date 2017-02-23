@@ -1,0 +1,126 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.DianpuCommentDao">
+    <resultMap id="dianpuComment" type="com.liangxunwang.unimanager.model.DianpuComment">
+        <id column="dianpu_comment_id" property="dianpu_comment_id"/>
+        <result column="dianpu_comment_cont" property="dianpu_comment_cont"/>
+        <result column="dianpu_comment_pic" property="dianpu_comment_pic"/>
+        <result column="emp_id_seller" property="emp_id_seller"/>
+        <result column="emp_id" property="emp_id"/>
+        <result column="comment_dateline" property="comment_dateline"/>
+        <result column="is_del" property="is_del"/>
+        <result column="starNumber" property="starNumber"/>
+
+        <result column="emp_name" property="emp_name"/>
+        <result column="emp_cover" property="emp_cover"/>
+        <result column="emp_mobile" property="emp_mobile"/>
+
+        <result column="emp_name_seller" property="emp_name_seller"/>
+        <result column="emp_cover_seller" property="emp_cover_seller"/>
+        <result column="emp_mobile_seller" property="emp_mobile_seller"/>
+        <result column="company_name" property="company_name"/>
+    </resultMap>
+
+    <select id="lists" resultMap="dianpuComment">
+        SELECT lc.*,
+        lemp.emp_name as emp_name,
+        lemp.emp_cover as emp_cover,
+        lemp.emp_mobile as emp_mobile,
+
+        lempSeller.emp_name as emp_name,
+        lempSeller.emp_cover as emp_cover,
+        lempSeller.emp_mobile as emp_mobile,
+        lmanager.company_name as company_name
+
+        from dianpu_comment lc
+        LEFT JOIN  lx_emp lemp ON lemp.emp_id = lc.emp_id
+        LEFT JOIN  lx_emp lempSeller ON lempSeller.emp_id = lc.emp_id_seller
+        LEFT JOIN  manager_info lmanager ON lmanager.emp_id = lc.emp_id_seller
+        WHERE 1=1
+        <if test="emp_id != null and emp_id != ''">
+            AND lc.emp_id = #{emp_id}
+        </if>
+        <if test="emp_id_seller != null and emp_id_seller != ''">
+            AND lc.emp_id_seller = #{emp_id_seller}
+        </if>
+        <if test="is_del != null and is_del != ''">
+            AND lc.is_del = #{is_del}
+        </if>
+        <if test="emp_mobile != null and emp_mobile != ''">
+            AND lemp.emp_mobile = #{emp_mobile}
+        </if>
+        <if test="keyWords != null and keyWords != ''">
+            AND lmanager.company_name like CONCAT('%',#{keyWords},'%')
+        </if>
+
+        ORDER BY lc.comment_dateline DESC
+        limit #{index},#{size}
+    </select>
+
+
+    <select id="count" resultType="long">
+        select count(lc.dianpu_comment_id)
+        from dianpu_comment lc
+        LEFT JOIN  lx_emp lemp ON lemp.emp_id = lc.emp_id
+        LEFT JOIN  lx_emp lempSeller ON lempSeller.emp_id = lc.emp_id_seller
+        LEFT JOIN  manager_info lmanager ON lmanager.emp_id = lc.emp_id_seller
+        WHERE 1=1
+        <if test="emp_id != null and emp_id != ''">
+            AND lc.emp_id = #{emp_id}
+        </if>
+        <if test="emp_id_seller != null and emp_id_seller != ''">
+            AND lc.emp_id_seller = #{emp_id_seller}
+        </if>
+        <if test="is_del != null and is_del != ''">
+            AND lc.is_del = #{is_del}
+        </if>
+        <if test="emp_mobile != null and emp_mobile != ''">
+            AND lemp.emp_mobile = #{emp_mobile}
+        </if>
+        <if test="keyWords != null and keyWords != ''">
+            AND lmanager.company_name like CONCAT('%',#{keyWords},'%')
+        </if>
+    </select>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.DianpuComment">
+        INSERT INTO dianpu_comment(dianpu_comment_id, dianpu_comment_cont, dianpu_comment_pic, emp_id_seller, emp_id, comment_dateline, starNumber)
+        VALUES (#{dianpu_comment_id}, #{dianpu_comment_cont,jdbcType=VARCHAR}, #{dianpu_comment_pic,jdbcType=VARCHAR}, #{emp_id_seller,jdbcType=VARCHAR}, #{emp_id}, #{comment_dateline}, #{starNumber})
+    </insert>
+
+
+    <delete id="delete" parameterType="String">
+        DELETE FROM dianpu_comment where dianpu_comment_id = #{dianpu_comment_id}
+    </delete>
+
+    <select id="findById" parameterType="String" resultMap="dianpuComment">
+         SELECT lc.*,
+        lemp.emp_name as emp_name,
+        lemp.emp_cover as emp_cover,
+        lemp.emp_mobile as emp_mobile,
+
+        lempSeller.emp_name as emp_name,
+        lempSeller.emp_cover as emp_cover,
+        lempSeller.emp_mobile as emp_mobile,
+        lmanager.company_name as company_name
+
+        from dianpu_comment lc
+        LEFT JOIN  lx_emp lemp ON lemp.emp_id = lc.emp_id
+        LEFT JOIN  lx_emp lempSeller ON lempSeller.emp_id = lc.emp_id_seller
+          LEFT JOIN  manager_info lmanager ON lmanager.emp_id = lc.emp_id_seller
+        WHERE 1=1 AND lc.dianpu_comment_id=#{dianpu_comment_id}
+    </select>
+
+    <select id="countStarNumber" resultType="long">
+        select sum(lc.starNumber) from dianpu_comment lc
+        WHERE 1=1
+        <if test="emp_id != null and emp_id != ''">
+            AND lc.emp_id = #{emp_id}
+        </if>
+        <if test="emp_id_seller != null and emp_id_seller != ''">
+            AND lc.emp_id_seller = #{emp_id_seller}
+        </if>
+    </select>
+
+</mapper>

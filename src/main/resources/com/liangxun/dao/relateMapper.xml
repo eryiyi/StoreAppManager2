@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.RelateDao">
+    <resultMap id="my_relate" type="com.liangxunwang.unimanager.model.Relate">
+        <id column="id" property="id"/>
+        <result column="type_id" property="typeId"/>
+        <result column="record_id" property="recordId"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="order_id" property="orderId"/>
+        <result column="emp_id" property="empId"/>
+        <result column="emptwo_id" property="empTwoId"/>
+        <result column="cont" property="cont"/>
+        <result column="dateline" property="dateline"/>
+        <result column="is_read" property="is_read"/>
+
+    </resultMap>
+    <resultMap id="my_relate_vo" type="com.liangxunwang.unimanager.mvc.vo.RelateVO">
+        <id column="id" property="id"/>
+        <result column="type_id" property="typeId"/>
+        <result column="record_id" property="recordId"/>
+        <result column="goods_id" property="goodsId"/>
+        <result column="order_id" property="orderId"/>
+        <result column="emp_id" property="empId"/>
+        <result column="emptwo_id" property="empTwoId"/>
+        <result column="cont" property="cont"/>
+        <result column="dateline" property="dateline"/>
+        <result column="emp_name" property="empName"/>
+        <result column="emp_cover" property="empCover"/>
+        <result column="is_read" property="is_read"/>
+    </resultMap>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.Relate">
+        INSERT INTO school_relate(id, type_id, record_id, goods_id, order_id, emp_id, emptwo_id, cont, dateline )
+        VALUES (#{id}, #{typeId},#{recordId, jdbcType=VARCHAR}, #{goodsId, jdbcType=VARCHAR}, #{orderId, jdbcType=VARCHAR}, #{empId}, #{empTwoId},#{cont} ,#{dateline})
+    </insert>
+
+    <select id="list" resultMap="my_relate_vo">
+        SELECT sr.*, le.mm_emp_nickname as emp_name, le.mm_emp_cover as emp_cover  FROM school_relate sr
+        LEFT JOIN mm_emp le ON sr.emp_id=le.mm_emp_id
+        WHERE sr.emptwo_id=#{empId}
+        ORDER BY sr.dateline DESC
+        limit #{index},#{size}
+    </select>
+
+    <delete id="deleteByRecordId" parameterType="String">
+        DELETE FROM SCHOOL_RELATE WHERE RECORD_ID=#{recordId}
+    </delete>
+
+    <delete id="deleteByGoodsId" parameterType="String">
+        DELETE FROM SCHOOL_RELATE WHERE GOODS_ID=#{goodsId}
+    </delete>
+
+    <update id="update" parameterType="String">
+        UPDATE SCHOOL_RELATE SET isread='1' WHERE id=#{id}
+    </update>
+
+
+</mapper>

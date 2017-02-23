@@ -1,0 +1,42 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.LoadPicDao">
+    <resultMap id="loadPic" type="com.liangxunwang.unimanager.model.LoadPic">
+        <id column="load_pic_id" property="load_pic_id"/>
+        <result column="load_pic_title" property="load_pic_title"/>
+        <result column="load_pic" property="load_pic"/>
+        <result column="top_number" property="top_number"/>
+        <result column="is_use" property="is_use"/>
+    </resultMap>
+
+    <select id="lists" resultMap="loadPic">
+        SELECT * from load_pic
+        WHERE 1=1
+        <if test="is_use != null and is_use != ''">
+            AND is_use = #{is_use}
+        </if>
+        ORDER BY top_number DESC
+    </select>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.LoadPic">
+        INSERT INTO load_pic(load_pic_id, load_pic_title, load_pic, top_number, is_use)
+        VALUES (#{load_pic_id}, #{load_pic_title}, #{load_pic}, #{top_number,jdbcType=VARCHAR}, #{is_use,jdbcType=VARCHAR})
+    </insert>
+
+
+    <delete id="delete" parameterType="String">
+        DELETE FROM load_pic where load_pic_id = #{load_pic_id}
+    </delete>
+
+    <select id="findById" parameterType="String" resultMap="loadPic">
+        SELECT * FROM load_pic where load_pic_id=#{load_pic_id}
+    </select>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.LoadPic">
+        UPDATE load_pic SET
+        load_pic=#{load_pic}
+         WHERE load_pic_id=#{load_pic_id}
+    </update>
+</mapper>

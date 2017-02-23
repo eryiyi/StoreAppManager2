@@ -1,0 +1,79 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.LxAdDao">
+    <resultMap id="lxAdObj" type="com.liangxunwang.unimanager.model.LxAd">
+        <id column="ad_id" property="ad_id"/>
+        <result column="ad_type" property="ad_type"/>
+        <result column="ad_pic" property="ad_pic"/>
+        <result column="ad_url_type" property="ad_url_type"/>
+        <result column="ad_emp_id" property="ad_emp_id"/>
+        <result column="ad_msg_id" property="ad_msg_id"/>
+        <result column="top_num" property="top_num"/>
+        <result column="dateline" property="dateline"/>
+        <result column="goods_name" property="goods_name"/>
+        <result column="ad_content" property="ad_content"/>
+
+        <!--private String ad_id;-->
+        <!--private String ad_type;//广告类别  1推荐顶部轮播图  2推荐中部广告（大） 3 推荐中部广告（小） 4 商城顶部轮播图  5 商城首发新品 6 商城特惠专区-->
+        <!--private String ad_pic;-->
+        <!--private String ad_url_type;//1商品详情   2商店详情-->
+        <!--private String ad_emp_id;//要跳转的用户id-->
+        <!--private String ad_msg_id;//要跳转的商品或商城id-->
+        <!--private String top_num;//排序-->
+        <!--private String dateline;-->
+    </resultMap>
+
+    <select id="lists" resultMap="lxAdObj">
+        SELECT lad.* , lg.goods_name as goods_name from lx_ad lad
+        LEFT JOIN paopao_goods lg ON lg.goods_id = lad.ad_msg_id
+        WHERE 1=1
+        <if test="ad_type != null and ad_type != ''">
+            AND lad.ad_type = #{ad_type}
+        </if>
+        ORDER BY lad.dateline DESC
+        limit #{index},#{size}
+    </select>
+
+    <select id="listsAll" resultMap="lxAdObj">
+        SELECT * from lx_ad
+        WHERE 1=1
+        <if test="ad_type != null and ad_type != ''">
+            AND ad_type = #{ad_type}
+        </if>
+        ORDER BY dateline DESC
+    </select>
+
+    <select id="count" resultType="Long">
+        SELECT count(sn.ad_id) FROM lx_ad sn
+        WHERE 1=1
+        <if test="ad_type != null and ad_type != ''">
+            AND sn.ad_type = #{ad_type}
+        </if>
+    </select>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.LxAd">
+        INSERT INTO lx_ad(ad_id, ad_type, ad_pic, ad_url_type, ad_emp_id, ad_msg_id, top_num, dateline, ad_content)
+        VALUES (#{ad_id}, #{ad_type}, #{ad_pic}, #{ad_url_type}, #{ad_emp_id,jdbcType=VARCHAR}, #{ad_msg_id,jdbcType=VARCHAR}, #{top_num}, #{dateline}, #{ad_content,jdbcType=VARCHAR})
+    </insert>
+
+    <delete id="delete" parameterType="String">
+        DELETE FROM lx_ad where ad_id = #{ad_id}
+    </delete>
+
+    <select id="findById" parameterType="String" resultMap="lxAdObj">
+        SELECT * FROM lx_ad where ad_id=#{ad_id}
+    </select>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.LxAd">
+        UPDATE lx_ad
+        SET
+        ad_type=#{ad_type},
+        ad_pic=#{ad_pic} ,
+        ad_content=#{ad_content} ,
+        ad_msg_id=#{ad_msg_id} ,
+        top_num=#{top_num}
+        WHERE ad_id=#{ad_id}
+    </update>
+</mapper>

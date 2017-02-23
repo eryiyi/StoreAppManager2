@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.RateDao">
+    <resultMap id="my_rate" type="com.liangxunwang.unimanager.model.Rate">
+        <id column="rid" property="rid"/>
+        <result column="rate" property="rate"/>
+    </resultMap>
+
+    <select id="findById" resultMap="my_rate" parameterType="String">
+        SELECT * from paopao_rate WHERE rid=#{id}
+    </select>
+
+    <update id="updateRate" parameterType="com.liangxunwang.unimanager.model.Rate">
+        UPDATE PAOPAO_RATE SET RATE=#{rate} WHERE RID=#{rid}
+    </update>
+</mapper>

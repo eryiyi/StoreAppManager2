@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.ProvinceDao">
+    <resultMap id="my_province" type="com.liangxunwang.unimanager.model.Province">
+        <id column="pid" property="pid"/>
+        <result column="provinceid" property="provinceId"/>
+        <result column="pname" property="pname"/>
+    </resultMap>
+
+    <select id="list" resultMap="my_province">
+        SELECT * from province
+    </select>
+
+</mapper>

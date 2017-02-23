@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.LxDxkLevelDao">
+    <resultMap id="lxDxkLevel" type="com.liangxunwang.unimanager.model.LxDxkLevel">
+        <id column="lx_dxk_level_id" property="lx_dxk_level_id"/>
+        <result column="lx_dxk_name" property="lx_dxk_name"/>
+        <result column="lx_dxk_nick" property="lx_dxk_nick"/>
+        <result column="lx_dxk_rate" property="lx_dxk_rate"/>
+    </resultMap>
+
+    <select id="lists" resultMap="lxDxkLevel">
+        SELECT * from lx_dxk_level
+    </select>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.LxDxkLevel">
+        INSERT INTO lx_dxk_level(lx_dxk_level_id, lx_dxk_name, lx_dxk_nick, lx_dxk_rate)
+        VALUES (#{lx_dxk_level_id}, #{lx_dxk_name}, #{lx_dxk_nick}, #{lx_dxk_rate})
+    </insert>
+
+    <select id="findById" parameterType="String" resultMap="lxDxkLevel">
+        SELECT * FROM lx_dxk_level where lx_dxk_level_id=#{lx_dxk_level_id}
+    </select>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.LxDxkLevel">
+        UPDATE lx_dxk_level SET lx_dxk_rate=#{lx_dxk_rate}
+        WHERE lx_dxk_level_id=#{lx_dxk_level_id}
+    </update>
+
+</mapper>

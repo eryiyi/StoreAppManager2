@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.SellerGoodsDao">
+    <resultMap id="my_seller_goods" type="com.liangxunwang.unimanager.model.SellerGoods">
+        <id column="id" property="id"/>
+        <result column="emp_id" property="empId"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="school_id" property="schoolId"/>
+        <result column="end_time" property="endTime"/>
+        <result column="dateline" property="dateline"/>
+    </resultMap>
+    <resultMap id="my_seller_goods_vo" type="com.liangxunwang.unimanager.mvc.vo.SellerGoodsVO">
+        <id column="id" property="id"/>
+        <result column="emp_id" property="empId"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="school_id" property="schoolId"/>
+        <result column="end_time" property="endTime"/>
+        <result column="dateline" property="dateline"/>
+        <result column="emp_name" property="empName"/>
+        <result column="emp_cover" property="empCover"/>
+        <result column="school_name" property="schoolName"/>
+        <result column="emp_mobile" property="mobile"/>
+    </resultMap>
+    <resultMap id="seller_school_list" type="com.liangxunwang.unimanager.mvc.vo.SellerSchoolList">
+        <id column="id" property="id"/>
+        <result column="school_name" property="schoolName"/>
+        <result column="dateline" property="startTime"/>
+        <result column="end_time" property="endTime"/>
+        <result column="school_id" property="schoolId"/>
+        <result column="emp_id" property="empId"/>
+        <result column="contract_id" property="contractId"/>
+    </resultMap>
+
+    <resultMap id="settlement_sellers" type="com.liangxunwang.unimanager.model.SettlementSellers">
+        <result column="emp_id" property="empId"/>
+        <result column="emp_name" property="empName"/>
+        <result column="contract_id" property="contractId"/>
+        <result column="emp_mobile" property="empMobile"/>
+        <result column="total_money" property="totalMoney"/>
+        <result column="is_account" property="isAccount"/>
+    </resultMap>
+
+    <insert id="saveList" parameterType="java.util.List">
+        insert into Seller_goods (id, emp_id, contract_id, school_id, end_time, dateline)
+        <foreach close=")" collection="list" item="item" index="index" open="(" separator="union all">
+            select
+            #{item.id,jdbcType=VARCHAR},
+            #{item.empId,jdbcType=VARCHAR},
+            #{item.contractId,jdbcType=VARCHAR},
+            #{item.schoolId,jdbcType=VARCHAR},
+            #{item.endTime,jdbcType=VARCHAR},
+            #{item.dateline,jdbcType=VARCHAR}
+            from dual
+        </foreach>
+    </insert>
+
+    <select id="getSellerGoodsById" resultMap="my_seller_goods">
+        SELECT * FROM Seller_goods WHERE emp_id=#{empId} AND contract_id=#{contractId}
+    </select>
+    <select id="getSellerGoodsByEmpId" resultMap="my_seller_goods">
+        SELECT * FROM Seller_goods WHERE emp_id=#{empId}
+    </select>
+
+    <delete id="delete">
+        DELETE FROM Seller_goods WHERE emp_id=#{empId} and contract_id=#{contractId}
+    </delete>
+
+    <select id="findByEmpId" resultMap="my_seller_goods" parameterType="String">
+        SELECT * FROM Seller_goods WHERE emp_id=#{empId}
+    </select>
+
+    <select id="findSellerById" resultMap="my_seller_goods_vo" parameterType="String">
+        SELECT DISTINCT sg.emp_id,sg.SCHOOL_ID,sg.CONTRACT_ID, le.emp_name, le.emp_cover, le.EMP_MOBILE,co.NAME as school_name, sg.END_TIME
+        FROM Seller_goods sg
+        LEFT JOIN lx_emp le on sg.emp_id=le.emp_id
+        LEFT JOIN college co on sg.school_id=co.coid
+        WHERE sg.contract_id=#{empId} and le.emp_id  is NOT NULL
+        <if test="phone != null and phone != ''">
+            and le.emp_mobile=#{phone}
+        </if>
+        <if test="name != null and name != ''">
+            and le.emp_name like CONCAT('%',#{name},'%')
+        </if>
+      limit #{index},#{size}
+    </select>
+
+
+    <select id="findSellerByIdAll" resultMap="my_seller_goods_vo" parameterType="String">
+        SELECT DISTINCT sg.emp_id,sg.SCHOOL_ID,sg.CONTRACT_ID, le.emp_name, le.emp_cover, le.EMP_MOBILE,co.NAME as school_name, sg.END_TIME
+        FROM Seller_goods sg
+        LEFT JOIN lx_emp le on sg.emp_id=le.emp_id
+        LEFT JOIN college co on sg.school_id=co.coid
+        WHERE sg.contract_id=#{empId} and le.emp_id  is NOT NULL
+    </select>
+
+    <select id="count" resultType="Long">
+        SELECT count(sg.ID) FROM SELLER_GOODS sg
+        LEFT JOIN lx_emp le on sg.emp_id=le.emp_id
+        WHERE sg.CONTRACT_ID=#{empId} and le.emp_id  is NOT NULL
+        <if test="phone != null and phone != ''">
+            and le.emp_mobile=#{phone}
+        </if>
+        <if test="name != null and name != ''">
+            and le.emp_name like CONCAT('%',#{name},'%')
+        </if>
+
+    </select>
+
+    <select id="findSellerSchoolList" resultMap="seller_school_list" parameterType="String">
+        SELECT sg.id, sg.emp_id, sg.contract_id, co.name as school_name, co.coid as school_id, sg.dateline, sg.end_time
+         FROM Seller_goods sg
+        LEFT JOIN college co on sg.school_id=co.coid
+        WHERE sg.emp_id=#{empId} AND sg.contract_id=#{contractId}
+    </select>
+    <select id="findSellerSchoolListById" resultMap="seller_school_list" parameterType="String">
+            SELECT sg.id, sg.emp_id, sg.contract_id, co.name as school_name, co.coid as school_id, sg.dateline, sg.end_time
+             FROM Seller_goods sg
+            LEFT JOIN college co on sg.school_id=co.coid
+            WHERE sg.emp_id=#{empId}
+        </select>
+
+    <delete id="deleteById">
+        DELETE FROM Seller_goods WHERE id=#{id}
+    </delete>
+
+    <update id="updateEndTime" parameterType="String">
+        UPDATE Seller_goods SET end_time=#{endTime} WHERE id=#{id}
+    </update>
+
+    <select id="findSellerGoods" resultMap="my_seller_goods" parameterType="String">
+      SELECT * FROM SELLER_GOODS WHERE EMP_ID=#{empId} AND CONTRACT_ID=#{contractId}
+    </select>
+
+    <select id="getEndSeller" resultMap="my_seller_goods" parameterType="String">
+        SELECT * FROM SELLER_GOODS WHERE END_TIME &lt; #{nowTime}
+    </select>
+
+    <select id="getCheckSeller" resultMap="my_seller_goods" parameterType="String">
+        SELECT * FROM SELLER_GOODS WHERE EMP_ID=#{empId} AND END_TIME &gt; #{time}
+    </select>
+
+    <select id="findBySchoolId" resultMap="my_seller_goods" parameterType="String">
+        SELECT * FROM SELLER_GOODS WHERE SCHOOL_ID=#{schoolId}
+    </select>
+
+    <select id="getSellerByEmpAndSchool" resultMap="my_seller_goods" parameterType="String">
+        SELECT * FROM SELLER_GOODS WHERE EMP_ID=#{empId} AND SCHOOL_ID != #{schoolId}
+    </select>
+
+    <select id="findByEmpContract" resultMap="my_seller_goods_vo">
+         SELECT DISTINCT sg.id,sg.emp_id,sg.SCHOOL_ID, le.emp_name, le.emp_cover, le.EMP_MOBILE,co.NAME as school_name, sg.END_TIME
+        FROM Seller_goods sg
+        LEFT JOIN lx_emp le on sg.emp_id=le.emp_id
+        LEFT JOIN college co on sg.school_id=co.coid
+        WHERE sg.EMP_ID=#{empId} AND sg.SCHOOL_ID=#{schoolId}
+    </select>
+
+    <select id="settlementSellers" resultMap="settlement_sellers">
+
+        SELECT DISTINCT le.EMP_NAME, le.EMP_MOBILE, sg.EMP_ID, sg.CONTRACT_ID,a.total_money, a.is_account FROM SELLER_GOODS sg
+        LEFT JOIN (
+        SELECT SELLER_EMP_ID,sum(PAYABLE_AMOUNT) total_money, sum(ISACCOUNT) is_account
+        FROM PAOPAO_SHOPPING_ORDER
+        WHERE COMPLETION_TIME &gt;#{startTime} AND COMPLETION_TIME &lt;#{endTime}
+        AND PAY_STATUS='1'
+        GROUP BY SELLER_EMP_ID
+        ) a
+        ON sg.EMP_ID = a.SELLER_EMP_ID
+        LEFT JOIN LX_EMP le
+        ON sg.EMP_ID=le.EMP_ID
+       WHERE '1'='1'
+        <if test="isAccount != null and isAccount != ''">
+            and a.is_account=#{isAccount}
+        </if>
+        <if test="isAccount == null or isAccount == ''">
+            and a.is_account !='0'
+        </if>
+        limit #{index},#{size}
+    </select>
+
+    <select id="settlementSellersCount" resultType="Long">
+        SELECT count(EMP_ID) FROM (
+        SELECT DISTINCT le.EMP_NAME, le.EMP_MOBILE, sg.EMP_ID, sg.CONTRACT_ID,a.total_money, a.is_account FROM SELLER_GOODS sg
+        LEFT JOIN (
+        SELECT SELLER_EMP_ID,sum(PAYABLE_AMOUNT) total_money, sum(ISACCOUNT) is_account
+        FROM PAOPAO_SHOPPING_ORDER
+        WHERE COMPLETION_TIME &gt;#{startTime} AND COMPLETION_TIME &lt;#{endTime}
+        GROUP BY SELLER_EMP_ID
+        ) a
+        ON sg.EMP_ID = a.SELLER_EMP_ID
+        LEFT JOIN LX_EMP le
+        ON sg.EMP_ID=le.EMP_ID
+        WHERE '1'='1'
+        <if test="isAccount != null and isAccount != ''">
+            and a.is_account='0'
+        </if>
+        <if test="isAccount == null or isAccount == ''">
+            and a.is_account !='0'
+        </if>
+        ) as total
+    </select>
+</mapper>

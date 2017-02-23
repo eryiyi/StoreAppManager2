@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.ManagerLogDao">
+    <resultMap id="my_manager_log" type="com.liangxunwang.unimanager.model.ManagerLog">
+        <id column="log_id" property="id"/>
+        <result column="report_id" property="reportId"/>
+        <result column="log_cont" property="content"/>
+        <result column="emp_id" property="empId"/>
+        <result column="dateline" property="dateline"/>
+    </resultMap>
+
+    <resultMap id="my_manager_log_vo" type="com.liangxunwang.unimanager.mvc.vo.ManagerLogVO">
+        <id column="log_id" property="id"/>
+        <result column="report_id" property="reportId"/>
+        <result column="log_cont" property="content"/>
+        <result column="emp_id" property="empId"/>
+        <result column="dateline" property="dateline"/>
+        <result column="emp_mobile" property="mobile"/>
+        <result column="emp_name" property="empName"/>
+    </resultMap>
+
+   <insert id="save" parameterType="com.liangxunwang.unimanager.model.ManagerLog">
+       INSERT INTO school_manager_log(log_id, report_id, log_cont, emp_id, dateline)
+       VALUES (#{id}, #{reportId}, #{content}, #{empId}, #{dateline})
+   </insert>
+
+    <select id="list" resultMap="my_manager_log_vo">
+
+        SELECT sml.*, le.emp_mobile, le.emp_name FROM school_manager_log sml
+        LEFT JOIN lx_emp le ON sml.emp_id=le.emp_id
+        ORDER BY sml.dateline DESC
+        limit #{index},#{size}
+    </select>
+
+    <select id="count" resultType="long">
+        SELECT count(log_id) FROM school_manager_log
+    </select>
+</mapper>

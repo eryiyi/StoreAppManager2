@@ -1,0 +1,107 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.LxbankApplyDao">
+    <resultMap id="lxbankApply" type="com.liangxunwang.unimanager.model.lxBankApply">
+        <id column="lx_bank_apply_id" property="lx_bank_apply_id"/>
+        <result column="lx_bank_apply_count" property="lx_bank_apply_count"/>
+        <result column="emp_id" property="emp_id"/>
+        <result column="bank_id" property="bank_id"/>
+        <result column="dateline_apply" property="dateline_apply"/>
+        <result column="dateline_done" property="dateline_done"/>
+        <result column="is_check" property="is_check"/>
+    </resultMap>
+
+    <resultMap id="lxbankApplyVo" type="com.liangxunwang.unimanager.mvc.vo.lxBankApplyVo">
+        <id column="lx_bank_apply_id" property="lx_bank_apply_id"/>
+        <result column="lx_bank_apply_count" property="lx_bank_apply_count"/>
+        <result column="emp_id" property="emp_id"/>
+        <result column="bank_id" property="bank_id"/>
+        <result column="dateline_apply" property="dateline_apply"/>
+        <result column="dateline_done" property="dateline_done"/>
+        <result column="is_check" property="is_check"/>
+
+        <result column="emp_number" property="emp_number"/>
+        <result column="emp_mobile" property="emp_mobile"/>
+        <result column="emp_name" property="emp_name"/>
+        <result column="emp_cover" property="emp_cover"/>
+
+        <result column="bank_emp_name" property="bank_emp_name"/>
+        <result column="bank_mobile" property="bank_mobile"/>
+        <result column="bank_kaihu_name" property="bank_kaihu_name"/>
+        <result column="bank_name" property="bank_name"/>
+        <result column="bank_card" property="bank_card"/>
+
+    </resultMap>
+
+    <select id="lists" resultMap="lxbankApplyVo">
+        SELECT sn.*,le.emp_number as emp_number,le.emp_mobile as emp_mobile,le.emp_name as emp_name,le.emp_cover as emp_cover
+        ,lbank.bank_emp_name as bank_emp_name
+        ,lbank.bank_mobile as bank_mobile
+        ,lbank.bank_kaihu_name as bank_kaihu_name
+        ,lbank.bank_name as bank_name
+        ,lbank.bank_card as bank_card
+        from lx_bank_apply sn
+        LEFT  JOIN lx_emp le ON le.emp_id = sn.emp_id
+        LEFT  JOIN lx_bank lbank ON lbank.bank_id = sn.bank_id
+        WHERE 1=1
+        <if test="emp_id != null and emp_id != ''">
+            AND sn.emp_id = #{emp_id}
+        </if>
+        <if test="is_check != null and is_check != ''">
+            AND sn.is_check = #{is_check}
+        </if>
+        <if test="phoneNumber != null and phoneNumber != ''">
+            AND le.emp_mobile = #{phoneNumber}
+        </if>
+        <if test="keyWords != null and keyWords != ''">
+            AND le.emp_name like CONCAT('%',#{keyWords},'%')
+        </if>
+        ORDER BY sn.dateline_apply DESC
+        limit #{index},#{size}
+    </select>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.lxBankApply">
+        INSERT INTO lx_bank_apply(lx_bank_apply_id, lx_bank_apply_count, emp_id, bank_id, dateline_apply, dateline_done)
+        VALUES (#{lx_bank_apply_id}, #{lx_bank_apply_count}, #{emp_id}, #{bank_id}, #{dateline_apply}, #{dateline_done, jdbcType=VARCHAR})
+    </insert>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.lxBankApply">
+        UPDATE lx_bank_apply SET dateline_done=#{dateline_done}, is_check=#{is_check}
+        WHERE lx_bank_apply_id=#{lx_bank_apply_id}
+    </update>
+
+    <select id="count" resultType="Long">
+        SELECT count(sn.lx_bank_apply_id) FROM lx_bank_apply sn
+        LEFT  JOIN lx_emp le ON le.emp_id = sn.emp_id
+        WHERE 1=1
+        <if test="emp_id != null and emp_id != ''">
+            AND sn.emp_id = #{emp_id}
+        </if>
+        <if test="is_check != null and is_check != ''">
+            AND sn.is_check = #{is_check}
+        </if>
+        <if test="phoneNumber != null and phoneNumber != ''">
+            AND le.emp_mobile = #{phoneNumber}
+        </if>
+        <if test="keyWords != null and keyWords != ''">
+            AND le.emp_name like CONCAT('%',#{keyWords},'%')
+        </if>
+    </select>
+
+    <select id="findById" parameterType="String" resultMap="lxbankApplyVo">
+        SELECT sn.*,le.emp_number as emp_number,le.emp_mobile as emp_mobile,le.emp_name as emp_name,le.emp_cover as emp_cover
+           ,lbank.bank_emp_name as bank_emp_name
+        ,lbank.bank_mobile as bank_mobile
+        ,lbank.bank_kaihu_name as bank_kaihu_name
+        ,lbank.bank_name as bank_name
+        ,lbank.bank_card as bank_card
+         from lx_bank_apply sn
+        LEFT  JOIN lx_emp le ON le.emp_id = sn.emp_id
+        LEFT  JOIN lx_bank lbank ON lbank.bank_id = sn.bank_id
+        WHERE sn.lx_bank_apply_id = #{lx_bank_apply_id}
+    </select>
+
+
+</mapper>

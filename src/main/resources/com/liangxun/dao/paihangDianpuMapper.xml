@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.PaihanDianpuDao">
+    <resultMap id="paihang_dianpu" type="com.liangxunwang.unimanager.model.PaihangDianpu">
+        <id column="mm_paihang_id" property="mm_paihang_id"/>
+        <result column="emp_id" property="emp_id"/>
+        <result column="top_num" property="top_num"/>
+        <result column="is_del" property="is_del"/>
+        <result column="end_time" property="end_time"/>
+        <result column="is_type" property="is_type"/>
+    </resultMap>
+
+    <resultMap id="paihang_dianpu_vo" type="com.liangxunwang.unimanager.mvc.vo.PaihangDianpuVo">
+        <id column="mm_paihang_id" property="mm_paihang_id"/>
+        <result column="emp_id" property="emp_id"/>
+        <result column="top_num" property="top_num"/>
+        <result column="is_del" property="is_del"/>
+        <result column="end_time" property="end_time"/>
+        <result column="is_type" property="is_type"/>
+
+        <result column="company_name" property="company_name"/>
+        <result column="company_person" property="company_person"/>
+        <result column="company_tel" property="company_tel"/>
+        <result column="company_address" property="company_address"/>
+        <result column="company_detail" property="company_detail"/>
+
+        <result column="company_pic" property="company_pic"/>
+        <result column="company_star" property="company_star"/>
+        <result column="lat_company" property="lat_company"/>
+        <result column="lng_company" property="lng_company"/>
+        <result column="type_name" property="type_name"/>
+    </resultMap>
+
+
+    <select id="listRecordVo" resultMap="paihang_dianpu_vo">
+        SELECT m.*
+        FROM (
+        SELECT sn.* ,lg.company_name as company_name
+        ,lg.company_person as company_person
+        ,lg.company_tel as company_tel
+        ,lg.company_address as company_address
+        ,lg.company_detail as company_detail
+        ,lg.company_pic as company_pic
+        ,lg.company_star as company_star
+        ,lg.lat_company as lat_company
+        ,lg.lng_company as lng_company
+        ,ltype.type_name as type_name
+        from mm_paihang_dianpu sn
+        LEFT JOIN manager_info lg ON sn.emp_id=lg.emp_id
+        LEFT JOIN lx_goods_type ltype ON lg.type_id=ltype.type_id
+        WHERE 1=1
+
+        <if test="is_del != null and is_del != ''">
+            AND sn.is_del = #{is_del}
+        </if>
+
+        <if test="is_type != null and is_type != ''">
+            AND sn.is_type = #{is_type}
+        </if>
+
+        <if test="keyword != null and keyword != ''">
+            AND  (lg.company_name like CONCAT('%',#{keyword},'%') OR  lg.company_detail = #{keyword})
+        </if>
+        ) m
+        ORDER  BY  m.top_num DESC limit #{index},#{size}
+    </select>
+
+    <select id="count" resultType="Long">
+        SELECT count(sn.mm_paihang_id) FROM mm_paihang_dianpu sn
+        LEFT JOIN manager_info lg ON sn.emp_id=lg.emp_id
+        LEFT JOIN lx_goods_type ltype ON lg.type_id=ltype.type_id
+        WHERE 1=1
+
+        <if test="is_del != null and is_del != ''">
+            AND sn.is_del = #{is_del}
+        </if>
+
+        <if test="is_type != null and is_type != ''">
+            AND sn.is_type = #{is_type}
+        </if>
+        <if test="keyword != null and keyword != ''">
+            AND  (lg.company_name like CONCAT('%',#{keyword},'%') OR  lg.company_detail = #{keyword})
+        </if>
+
+    </select>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.PaihangDianpu">
+        INSERT INTO mm_paihang_dianpu( mm_paihang_id, emp_id, top_num, is_del, end_time, is_type)
+        VALUES ( #{mm_paihang_id},#{emp_id}, #{top_num}, #{is_del}, #{end_time, jdbcType=VARCHAR}, #{is_type, jdbcType=VARCHAR})
+    </insert>
+
+    <update id="deleteById" parameterType="String">
+        UPDATE mm_paihang_dianpu SET is_del=1 WHERE mm_paihang_id=#{mm_paihang_id}
+    </update>
+
+    <update id="updateTop"  parameterType="com.liangxunwang.unimanager.model.PaihangDianpu">
+        UPDATE mm_paihang_dianpu SET top_num = #{top_num}, is_del = #{is_del}, end_time = #{end_time}, is_type = #{is_type}
+        WHERE mm_paihang_id=#{mm_paihang_id}
+    </update>
+
+    <update id="updateOverTime">
+        UPDATE mm_paihang_dianpu SET is_del='1' WHERE end_time &lt; #{nowTime}
+    </update>
+
+    <select id="findByGoodsId" resultMap="paihang_dianpu_vo">
+        SELECT * ,lg.company_name as company_name
+        ,lg.company_person as company_person
+        ,lg.company_tel as company_tel
+        ,lg.company_address as company_address
+        ,lg.company_detail as company_detail
+        ,lg.company_pic as company_pic
+        ,lg.company_star as company_star
+        ,lg.lat_company as lat_company
+        ,lg.lng_company as lng_company
+        ,ltype.type_name as type_name
+        from mm_paihang_dianpu sn
+
+        LEFT JOIN manager_info lg ON sn.emp_id=lg.emp_id
+        LEFT JOIN lx_goods_type ltype ON lg.type_id=ltype.type_id
+
+        WHERE sn.emp_id=#{emp_id}
+        <if test="is_type != null and is_type != ''">
+            AND sn.is_type = #{is_type}
+        </if>
+
+    </select>
+
+    <select id="findById" resultMap="paihang_dianpu_vo">
+        SELECT * ,lg.company_name as company_name
+        ,lg.company_person as company_person
+        ,lg.company_tel as company_tel
+        ,lg.company_address as company_address
+        ,lg.company_detail as company_detail
+        ,lg.company_pic as company_pic
+        ,lg.company_star as company_star
+        ,lg.lat_company as lat_company
+        ,lg.lng_company as lng_company
+        ,ltype.type_name as type_name
+        from mm_paihang_dianpu sn
+
+        LEFT JOIN manager_info lg ON sn.emp_id=lg.emp_id
+        LEFT JOIN lx_goods_type ltype ON lg.type_id=ltype.type_id
+
+        WHERE sn.mm_paihang_id=#{mm_paihang_id}
+        <if test="is_type != null and is_type != ''">
+            AND sn.is_type = #{is_type}
+        </if>
+        <if test="is_del != null and is_del != ''">
+            AND sn.is_del = #{is_del}
+        </if>
+    </select>
+
+
+</mapper>

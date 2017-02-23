@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.VersionCodeObjDao">
+    <resultMap id="versionCodeObj" type="com.liangxunwang.unimanager.model.VersonCodeObj">
+        <id column="mm_version_id" property="mm_version_id"/>
+        <result column="mm_version_code" property="mm_version_code"/>
+        <result column="mm_version_package" property="mm_version_package"/>
+    </resultMap>
+
+    <select id="lists" resultMap="versionCodeObj">
+        SELECT * from lx_version
+    </select>
+
+    <select id="findById" parameterType="String" resultMap="versionCodeObj">
+        SELECT * FROM lx_version where mm_version_id=#{mm_version_id}
+    </select>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.VersonCodeObj">
+        UPDATE lx_version SET mm_version_code=#{mm_version_code}
+         WHERE mm_version_id=#{mm_version_id}
+    </update>
+</mapper>

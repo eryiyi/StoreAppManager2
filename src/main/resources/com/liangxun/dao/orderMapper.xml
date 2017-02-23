@@ -1,0 +1,311 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.OrderDao">
+    <resultMap id="order" type="com.liangxunwang.unimanager.model.Order">
+        <id column="order_no" property="order_no"/>
+        <result column="goods_id" property="goods_id"/>
+        <result column="emp_id" property="emp_id"/>
+        <result column="seller_emp_id" property="seller_emp_id"/>
+        <result column="PROVINCEID" property="provinceId"/>
+        <result column="CITYID" property="cityId"/>
+        <result column="AREAID" property="areaId"/>
+        <result column="address_id" property="address_id"/>
+        <result column="goods_count" property="goods_count"/>
+        <result column="payable_amount" property="payable_amount"/>
+        <result column="create_time" property="create_time"/>
+        <result column="pay_time" property="pay_time"/>
+        <result column="send_time" property="send_time"/>
+        <result column="accept_time" property="accept_time"/>
+        <result column="completion_time" property="completion_time"/>
+        <result column="status" property="status"/>
+        <result column="pay_status" property="pay_status"/>
+        <result column="distribution_type" property="distribution_type"/>
+        <result column="distribution_status" property="distribution_status"/>
+        <result column="postscript" property="postscript"/>
+        <result column="point" property="point"/>
+        <result column="trade_no" property="trade_no"/>
+        <result column="invoice" property="invoice"/>
+        <result column="invoice_title" property="invoice_title"/>
+        <result column="taxes" property="taxes"/>
+        <result column="out_trade_no" property="out_trade_no"/>
+        <result column="isAccount" property="isAccount"/>
+        <result column="trade_type" property="trade_type"/>
+        <result column="returnMsg" property="returnMsg"/>
+        <result column="returnOrder" property="returnOrder"/>
+        <result column="is_comment" property="is_comment"/>
+        <result column="is_return" property="is_return"/>
+        <result column="is_dxk_order" property="is_dxk_order"/>
+    </resultMap>
+
+    <resultMap id="my_order_vo" type="com.liangxunwang.unimanager.mvc.vo.OrdersVO">
+        <id column="order_no" property="order_no"/>
+        <result column="goods_id" property="goods_id"/>
+        <result column="emp_id" property="emp_id"/>
+        <result column="seller_emp_id" property="seller_emp_id"/>
+        <result column="PROVINCEID" property="provinceId"/>
+        <result column="CITYID" property="cityId"/>
+        <result column="AREAID" property="areaId"/>
+        <result column="address_id" property="address_id"/>
+        <result column="goods_count" property="goods_count"/>
+        <result column="payable_amount" property="payable_amount"/>
+        <result column="create_time" property="create_time"/>
+        <result column="pay_time" property="pay_time"/>
+        <result column="send_time" property="send_time"/>
+        <result column="accept_time" property="accept_time"/>
+        <result column="completion_time" property="completion_time"/>
+        <result column="status" property="status"/>
+        <result column="pay_status" property="pay_status"/>
+        <result column="distribution_type" property="distribution_type"/>
+        <result column="distribution_status" property="distribution_status"/>
+        <result column="postscript" property="postscript"/>
+        <result column="point" property="point"/>
+        <result column="trade_no" property="trade_no"/>
+        <result column="invoice" property="invoice"/>
+        <result column="invoice_title" property="invoice_title"/>
+        <result column="taxes" property="taxes"/>
+        <result column="out_trade_no" property="out_trade_no"/>
+        <result column="isAccount" property="isAccount"/>
+
+        <result column="emp_name" property="empName"/>
+        <result column="phone" property="phone"/>
+        <result column="accept_name" property="accept_name"/>
+        <result column="emp_number" property="emp_number"/>
+        <result column="emp_mobile" property="emp_mobile"/>
+        <result column="seller_name" property="sellerName"/>
+        <result column="pname" property="provinceName"/>
+        <result column="cityName" property="cityName"/>
+        <result column="areaName" property="areaName"/>
+        <result column="address" property="address"/>
+        <result column="goods_name" property="goodsName"/>
+        <result column="trade_type" property="trade_type"/>
+        <result column="returnMsg" property="returnMsg"/>
+        <result column="returnOrder" property="returnOrder"/>
+        <result column="is_comment" property="is_comment"/>
+        <result column="is_return" property="is_return"/>
+        <result column="is_dxk_order" property="is_dxk_order"/>
+    </resultMap>
+
+    <resultMap id="settlement" type="com.liangxunwang.unimanager.model.Settlement">
+        <result column="date" property="date"/>
+        <result column="rate" property="rate"/>
+        <result column="income" property="income"/>
+        <result column="isAccount" property="isAccount"/>
+    </resultMap>
+
+    <select id="listOrders" resultMap="my_order_vo">
+        SELECT pso.*,
+        le.EMP_NAME as empName,
+        le.emp_mobile as emp_mobile,
+        le.emp_number as emp_number,
+        lp.EMP_NAME as seller_name,
+        psa.PHONE as phone,
+        psa.accept_name as accept_name,
+        psa.ADDRESS as address ,
+        p.PNAME as provinceName ,
+        cy.cityName as cityName,
+        a.AREANAME as areaName,
+        pg.GOODS_NAME as goodsName
+        FROM PAOPAO_SHOPPING_ORDER pso
+        LEFT JOIN LX_EMP le ON pso.EMP_ID=le.EMP_ID
+        LEFT JOIN LX_EMP lp ON pso.SELLER_EMP_ID=lp.EMP_ID
+        LEFT JOIN PAOPAO_SHOPPING_ADDRESS psa ON pso.ADDRESS_ID=psa.ADDRESS_ID
+        LEFT JOIN PROVINCE p ON pso.PROVINCEID=p.PROVINCEID
+        LEFT JOIN CITY cy ON pso.CITYID=cy.CITYID
+        LEFT JOIN AREA a ON pso.AREAID=a.AREAID
+        LEFT JOIN PAOPAO_GOODS pg ON pso.GOODS_ID=pg.GOODS_ID
+        WHERE '1'='1' AND pso.STATUS != '1'
+        <if test="empId != null and empId != ''">
+            AND pso.SELLER_EMP_ID=#{empId}
+        </if>
+        <if test="empName != null and empName != ''">
+            AND le.EMP_NAME like  CONCAT('%',#{empName},'%')
+        </if>
+        <if test="empPhone != null and empPhone != ''">
+            AND psa.PHONE = #{empPhone}
+        </if>
+        <if test="payStatus != null and payStatus != ''">
+            AND pso.PAY_STATUS = #{payStatus}
+        </if>
+        <if test="orderStatus != null and orderStatus != ''">
+            AND pso.STATUS = #{orderStatus}
+        </if>
+        <if test="distribStatus != null and distribStatus != ''">
+            AND pso.DISTRIBUTION_STATUS = #{distribStatus}
+        </if>
+        <if test="is_dxk_order != null and is_dxk_order != ''">
+            AND pso.is_dxk_order = #{is_dxk_order}
+        </if>
+
+        <if test="startTime != null and startTime != ''">
+            AND pso.COMPLETION_TIME &gt; #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND pso.COMPLETION_TIME &lt; #{endTime}
+        </if>
+
+        <if test="trade_type != null and trade_type != ''">
+            AND pso.trade_type = #{trade_type}
+        </if>
+
+        <if test="is_zhiying != null and is_zhiying != ''">
+            AND pg.is_zhiying = #{is_zhiying}
+        </if>
+
+     ORDER BY pso.create_time DESC
+      limit #{index},#{size}
+    </select>
+
+    <select id="count" resultType="Long">
+        SELECT count(pso.ORDER_NO) FROM PAOPAO_SHOPPING_ORDER pso
+        LEFT JOIN LX_EMP le ON pso.EMP_ID=le.EMP_ID
+        LEFT JOIN LX_EMP lp ON pso.SELLER_EMP_ID=lp.EMP_ID
+        LEFT JOIN PAOPAO_SHOPPING_ADDRESS psa ON pso.ADDRESS_ID=psa.ADDRESS_ID
+        LEFT JOIN PROVINCE p ON pso.PROVINCEID=p.PROVINCEID
+        LEFT JOIN CITY cy ON pso.CITYID=cy.CITYID
+        LEFT JOIN AREA a ON pso.AREAID=a.AREAID
+        LEFT JOIN PAOPAO_GOODS pg ON pso.GOODS_ID=pg.GOODS_ID
+        WHERE '1'='1'  AND pso.STATUS != '1'
+        <if test="empId != null and empId != ''">
+            AND pso.SELLER_EMP_ID = #{empId}
+        </if>
+        <if test="empName != null and empName != ''">
+            AND le.EMP_NAME like  CONCAT('%',#{empName},'%')
+        </if>
+        <if test="empPhone != null and empPhone != ''">
+            AND psa.PHONE = #{empPhone}
+        </if>
+        <if test="payStatus != null and payStatus != ''">
+            AND pso.PAY_STATUS = #{payStatus}
+        </if>
+        <if test="orderStatus != null and orderStatus != ''">
+            AND pso.STATUS = #{orderStatus}
+        </if>
+        <if test="distribStatus != null and distribStatus != ''">
+            AND pso.DISTRIBUTION_STATUS = #{distribStatus}
+        </if>
+
+        <if test="status != null and status != ''">
+            AND pso.STATUS=#{status}
+        </if>
+        <if test="is_dxk_order != null and is_dxk_order != ''">
+            AND pso.is_dxk_order = #{is_dxk_order}
+        </if>
+
+        <if test="trade_type != null and trade_type != ''">
+            AND pso.trade_type = #{trade_type}
+        </if>
+
+        <if test="startTime != null and startTime != ''">
+            AND pso.COMPLETION_TIME &gt; #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND pso.COMPLETION_TIME &lt; #{endTime}
+        </if>
+
+        <if test="is_zhiying != null and is_zhiying != ''">
+            AND pg.is_zhiying = #{is_zhiying}
+        </if>
+
+    </select>
+
+    <select id="findById" resultMap="my_order_vo" parameterType="String">
+        SELECT pso.*,
+        le.EMP_NAME as empName,
+        le.emp_mobile as emp_mobile,
+        le.emp_number as emp_number,
+        lp.EMP_NAME as seller_name,
+        psa.PHONE as phone ,
+        psa.accept_name as accept_name,
+        psa.ADDRESS as address,
+        p.PNAME as provinceName ,
+        cy.cityName as cityName,
+        a.AREANAME as areaName,
+        pg.GOODS_NAME as goodsName
+        FROM PAOPAO_SHOPPING_ORDER pso
+        LEFT JOIN LX_EMP le ON pso.EMP_ID=le.EMP_ID
+        LEFT JOIN LX_EMP lp ON pso.SELLER_EMP_ID=lp.EMP_ID
+        LEFT JOIN PAOPAO_SHOPPING_ADDRESS psa ON pso.ADDRESS_ID=psa.ADDRESS_ID
+        LEFT JOIN PROVINCE p ON pso.PROVINCEID=p.PROVINCEID
+        LEFT JOIN CITY cy ON pso.CITYID=cy.CITYID
+        LEFT JOIN AREA a ON pso.AREAID=a.AREAID
+        LEFT JOIN PAOPAO_GOODS pg ON pso.GOODS_ID=pg.GOODS_ID
+        WHERE pso.ORDER_NO=#{id}
+    </select>
+
+    <select id="income" resultType="Float">
+        SELECT sum(pso.PAYABLE_AMOUNT) FROM PAOPAO_SHOPPING_ORDER pso
+        LEFT JOIN LX_EMP lp ON pso.SELLER_EMP_ID=lp.EMP_ID
+        WHERE '1'='1'
+        <if test="empId != null and empId != ''">
+            AND pso.SELLER_EMP_ID=#{empId}
+        </if>
+        <if test="status != null and status != ''">
+            AND pso.STATUS=#{status}
+        </if>
+        <if test="startTime != null and startTime != ''">
+            AND pso.COMPLETION_TIME &gt; #{startTime}
+        </if>
+        <if test="endTime != null and endTime != ''">
+            AND pso.COMPLETION_TIME &lt; #{endTime}
+        </if>
+    </select>
+
+    <select id="settlement" resultMap="settlement">
+        SELECT sum(pso.PAYABLE_AMOUNT) as income, sum(pso.isAccount) as isAccount FROM PAOPAO_SHOPPING_ORDER pso
+        LEFT JOIN LX_EMP lp ON pso.SELLER_EMP_ID=lp.EMP_ID
+        WHERE pso.STATUS='5' AND pso.COMPLETION_TIME &gt; #{startTime} AND pso.COMPLETION_TIME &lt; #{endTime}
+        AND pso.PAY_STATUS='1'
+        <if test="empId != null and empId != ''">
+            AND pso.SELLER_EMP_ID=#{empId}
+        </if>
+    </select>
+
+    <update id="updateOrderStatus" parameterType="String">
+        UPDATE PAOPAO_SHOPPING_ORDER SET STATUS='5' ,COMPLETION_TIME=#{time}, ACCEPT_TIME=#{time}
+        WHERE #{time}-PAY_TIME &gt;#{period} AND PAY_STATUS='1' AND STATUS = '6'
+    </update>
+
+    <update id="updateOrderAccount">
+        UPDATE PAOPAO_SHOPPING_ORDER SET ISACCOUNT='1' WHERE SELLER_EMP_ID=#{empId}
+        AND STATUS='5' AND PAY_STATUS='1'
+        AND COMPLETION_TIME &gt; #{startTime}
+        AND COMPLETION_TIME &lt; #{endTime}
+    </update>
+
+
+    <select id="listOrdersEnd" resultMap="my_order_vo" parameterType="String">
+        SELECT pso.*,
+        le.EMP_NAME as empName,
+        le.emp_mobile as emp_mobile,
+        le.emp_number as emp_number,
+        lp.EMP_NAME as seller_name,
+        psa.PHONE as phone,
+        psa.accept_name as accept_name,
+        psa.ADDRESS as address,
+        p.PNAME as provinceName,
+        cy.cityName as cityName,
+        a.AREANAME as areaName,
+        pg.GOODS_NAME as goodsName
+        FROM PAOPAO_SHOPPING_ORDER pso
+        LEFT JOIN LX_EMP le ON pso.EMP_ID=le.EMP_ID
+        LEFT JOIN LX_EMP lp ON pso.SELLER_EMP_ID=lp.EMP_ID
+        LEFT JOIN PAOPAO_SHOPPING_ADDRESS psa ON pso.ADDRESS_ID=psa.ADDRESS_ID
+        LEFT JOIN PROVINCE p ON pso.PROVINCEID=p.PROVINCEID
+        LEFT JOIN CITY cy ON pso.CITYID=cy.CITYID
+        LEFT JOIN AREA a ON pso.AREAID=a.AREAID
+        LEFT JOIN PAOPAO_GOODS pg ON pso.GOODS_ID=pg.GOODS_ID
+        WHERE '1'='1'
+        AND #{time}-pso.PAY_TIME &gt;#{period}
+        AND pso.PAY_STATUS='1' AND (pso.STATUS = '6' OR  pso.STATUS = '2')
+    </select>
+
+
+    <select id="countDay" resultType="Long">
+        SELECT count(pso.ORDER_NO) FROM PAOPAO_SHOPPING_ORDER pso
+        WHERE '1'='1'
+        AND pso.create_time &gt; #{startTime}
+        AND pso.create_time &lt; #{endTime}
+    </select>
+</mapper>

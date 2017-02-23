@@ -1,0 +1,23 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.AppOrderCancelDao">
+    <resultMap id="order" type="com.liangxunwang.unimanager.model.CancelOrder">
+
+        <id column="order_cancel_no" property="order_cancel_no"/>
+        <result column="order_no" property="order_no"/>
+        <result column="emp_id" property="emp_id"/>
+        <result column="seller_emp_id" property="seller_emp_id"/>
+        <result column="cont" property="cont"/>
+        <result column="dateline" property="dateline"/>
+
+    </resultMap>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.CancelOrder">
+        INSERT INTO PAOPAO_SHOPPING_CANCEL
+         (order_cancel_no, order_no, emp_id, seller_emp_id,cont, dateline)
+        VALUES (#{order_cancel_no},#{order_no},#{emp_id},#{seller_emp_id} ,#{cont},#{dateline})
+    </insert>
+
+</mapper>

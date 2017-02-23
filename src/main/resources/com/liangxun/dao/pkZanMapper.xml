@@ -1,0 +1,39 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.PkZanDao">
+    <resultMap id="my_pk_zan" type="com.liangxunwang.unimanager.model.PKZan">
+        <id column="zan_id" property="id"/>
+        <result column="pk_zp_id" property="zpId"/>
+        <result column="zan_emp_id" property="empId"/>
+        <result column="dateline" property="dateline"/>
+    </resultMap>
+    <resultMap id="my_pk_zan_vo" type="com.liangxunwang.unimanager.mvc.vo.PkZanVO">
+        <id column="zan_id" property="id"/>
+        <result column="pk_zp_id" property="zpId"/>
+        <result column="zan_emp_id" property="empId"/>
+        <result column="dateline" property="dateline"/>
+        <result column="emp_name" property="nickName"/>
+        <result column="emp_cover" property="empCover"/>
+    </resultMap>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.PKZan">
+        INSERT INTO PK_ZAN(ZAN_ID, PK_ZP_ID, ZAN_EMP_ID, DATELINE)
+        VALUES (#{id}, #{zpId}, #{empId}, #{dateline})
+    </insert>
+    <select id="checkIsZan" resultMap="my_pk_zan">
+        SELECT * FROM PK_ZAN WHERE PK_ZP_ID=#{zpId} AND ZAN_EMP_ID=#{empId}
+    </select>
+
+    <select id="listPkZan" resultMap="my_pk_zan_vo">
+        SELECT pz.*, le.EMP_NAME, le.EMP_COVER FROM PK_ZAN pz
+        LEFT JOIN LX_EMP le ON le.EMP_ID=pz.ZAN_EMP_ID
+        WHERE pz.PK_ZP_ID=#{zpId}
+        ORDER BY pz.DATELINE DESC
+    </select>
+
+    <select id="count" resultType="Long">
+        SELECT COUNT (ZAN_ID) FROM PK_ZAN WHERE PK_ZP_ID=#{zpId}
+    </select>
+</mapper>

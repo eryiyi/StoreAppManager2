@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.AdDao">
+    <resultMap id="adObj" type="com.liangxunwang.unimanager.model.AdObj">
+        <id column="mm_ad_id" property="mm_ad_id"/>
+        <result column="mm_ad_url" property="mm_ad_url"/>
+        <result column="mm_ad_pic" property="mm_ad_pic"/>
+        <result column="mm_ad_title" property="mm_ad_title"/>
+        <result column="mm_ad_num" property="mm_ad_num"/>
+        <result column="emp_id" property="emp_id"/>
+    </resultMap>
+
+    <select id="lists" resultMap="adObj">
+        SELECT * from seller_ad
+        WHERE 1=1
+        <if test="emp_id != null and emp_id != ''">
+            AND emp_id = #{emp_id}
+        </if>
+        ORDER BY mm_ad_num DESC
+    </select>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.AdObj">
+        INSERT INTO seller_ad(mm_ad_id, mm_ad_url, mm_ad_pic, mm_ad_title, mm_ad_num, emp_id)
+        VALUES (#{mm_ad_id}, #{mm_ad_url}, #{mm_ad_pic}, #{mm_ad_title,jdbcType=VARCHAR}, #{mm_ad_num,jdbcType=VARCHAR}, #{emp_id,jdbcType=VARCHAR})
+    </insert>
+
+
+    <delete id="delete" parameterType="String">
+        DELETE FROM seller_ad where mm_ad_id = #{mm_ad_id}
+    </delete>
+
+    <select id="findById" parameterType="String" resultMap="adObj">
+        SELECT * FROM seller_ad where mm_ad_id=#{mm_ad_id}
+    </select>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.AdObj">
+        UPDATE seller_ad SET mm_ad_url=#{mm_ad_url},
+        mm_ad_pic=#{mm_ad_pic} ,
+         mm_ad_num=#{mm_ad_num,jdbcType=VARCHAR},
+         mm_ad_title=#{mm_ad_title,jdbcType=VARCHAR}
+         WHERE mm_ad_id=#{mm_ad_id}
+    </update>
+</mapper>

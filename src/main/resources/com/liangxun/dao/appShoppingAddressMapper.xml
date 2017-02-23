@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.AppShoppingAddressDao">
+    <resultMap id="shopping_address" type="com.liangxunwang.unimanager.model.ShoppingAddress">
+        <id column="address_id" property="address_id"/>
+        <result column="emp_id" property="emp_id"/>
+        <result column="accept_name" property="accept_name"/>
+        <result column="address" property="address"/>
+        <result column="province" property="province"/>
+        <result column="city" property="city"/>
+        <result column="area" property="area"/>
+        <result column="phone" property="phone"/>
+        <result column="is_default" property="is_default"/>
+        <result column="dateline" property="dateline"/>
+    </resultMap>
+
+    <resultMap id="shopping_address_vo" type="com.liangxunwang.unimanager.mvc.vo.ShoppingAddressVO">
+        <id column="address_id" property="address_id"/>
+        <result column="emp_id" property="emp_id"/>
+        <result column="accept_name" property="accept_name"/>
+        <result column="address" property="address"/>
+        <result column="province" property="province"/>
+        <result column="city" property="city"/>
+        <result column="area" property="area"/>
+        <result column="phone" property="phone"/>
+        <result column="is_default" property="is_default"/>
+        <result column="dateline" property="dateline"/>
+        <result column="PNAME" property="provinceName"/>
+        <result column="CityName" property="cityName"/>
+        <result column="AREAName" property="areaName"/>
+    </resultMap>
+
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.ShoppingAddress">
+        INSERT INTO paopao_shopping_address (address_id,emp_id,accept_name,address,phone,is_default,dateline,province,city,area)
+        VALUES (#{address_id}, #{emp_id} ,#{accept_name}, #{address} , #{phone}, #{is_default}, #{dateline},#{province},#{city},#{area} )
+    </insert>
+
+    <select id="findList" resultMap="shopping_address_vo" parameterType="String">
+       SELECT ladress.*, lpro.PNAME as provinceName, lcity.CityName as cityName, larea.AREAName as areaName
+        FROM  paopao_shopping_address ladress
+         LEFT JOIN PROVINCE lpro ON lpro.PROVINCEID=ladress.PROVINCE
+         LEFT JOIN CITY lcity ON lcity.CITYID = ladress.CITY
+         LEFT JOIN AREA larea ON larea.AREAID = ladress.AREA
+        WHERE ladress.emp_id = #{empId}  ORDER BY ladress.dateline DESC
+    </select>
+
+    <update id="deleteAddressById" parameterType="String">
+        DELETE FROM paopao_shopping_address WHERE address_id=#{address_id}
+    </update>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.ShoppingAddress">
+       UPDATE paopao_shopping_address SET accept_name=#{accept_name},address=#{address},
+        phone=#{phone},is_default=#{is_default} WHERE address_id=#{address_id}
+    </update>
+
+    <update id="updateByEmpid" parameterType="String">
+        UPDATE paopao_shopping_address SET is_default='0' WHERE emp_id=#{emp_id}
+    </update>
+
+    <select id="findAddressMoren" resultMap="shopping_address_vo" parameterType="String">
+        SELECT ladress.*, lpro.PNAME as provinceName, lcity.CityName as cityName, larea.AREAName as areaName
+        FROM  paopao_shopping_address ladress
+         LEFT JOIN PROVINCE lpro ON lpro.PROVINCEID=ladress.PROVINCE
+         LEFT JOIN CITY lcity ON lcity.CITYID = ladress.CITY
+         LEFT JOIN AREA  larea ON larea.AREAID = ladress.AREA
+        WHERE ladress.emp_id = #{empId}  AND  ladress.is_default='1'
+    </select>
+
+    <select id="findAddressByAddressId" resultMap="shopping_address_vo" parameterType="String">
+        SELECT ladress.*, lpro.PNAME as provinceName, lcity.CityName as cityName, larea.AREAName as areaName
+        FROM  paopao_shopping_address ladress
+         LEFT JOIN PROVINCE lpro ON lpro.PROVINCEID=ladress.PROVINCE
+         LEFT JOIN CITY lcity ON lcity.CITYID = ladress.CITY
+         LEFT JOIN AREA  larea ON larea.AREAID = ladress.AREA
+        WHERE ladress.address_id = #{address_id}
+    </select>
+</mapper>

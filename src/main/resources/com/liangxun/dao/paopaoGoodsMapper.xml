@@ -1,0 +1,360 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.PaopaoGoodsDao">
+    <resultMap id="my_paopao_goods" type="com.liangxunwang.unimanager.model.PaopaoGoods">
+        <id column="goods_id" property="id"/>
+        <id column="goods_type_id" property="typeId"/>
+        <id column="goods_name" property="name"/>
+        <id column="goods_cover" property="cover"/>
+        <id column="goods_cont" property="cont"/>
+        <id column="sell_price" property="sellPrice"/>
+        <id column="market_price" property="marketPrice"/>
+        <id column="goods_address" property="address"/>
+        <id column="goods_person" property="person"/>
+        <id column="goods_tel" property="tel"/>
+        <id column="goods_qq" property="qq"/>
+        <id column="goods_cover1" property="goods_cover1"/>
+        <id column="goods_cover2" property="goods_cover2"/>
+
+        <id column="goods_is_use" property="isUse"/>
+        <id column="goods_is_del" property="isDel"/>
+        <id column="up_time" property="upTime"/>
+        <id column="goods_count" property="count"/>
+        <id column="goods_count_sale" property="goods_count_sale"/>
+        <id column="goods_position" property="goods_position"/>
+        <id column="is_zhiying" property="is_zhiying"/>
+        <id column="is_dxk" property="is_dxk"/>
+        <id column="lx_class_id" property="lx_class_id"/>
+        <id column="top_number" property="top_number"/>
+        <id column="is_zhekou" property="is_zhekou"/>
+        <id column="zhekou_number" property="zhekou_number"/>
+
+        <id column="goods_emp_id" property="empId"/>
+        <id column="manager_id" property="manager_id"/>
+        <id column="pv_prices" property="pv_prices"/>
+
+        <id column="dianpu_number" property="dianpu_number"/>
+    </resultMap>
+    <resultMap id="my_paopao_goods_vo" type="com.liangxunwang.unimanager.mvc.vo.PaopaoGoodsVO">
+        <id column="goods_id" property="id"/>
+        <id column="goods_type_id" property="typeId"/>
+        <id column="goods_name" property="name"/>
+        <id column="goods_cover" property="cover"/>
+        <id column="goods_cont" property="cont"/>
+        <id column="sell_price" property="sellPrice"/>
+        <id column="market_price" property="marketPrice"/>
+        <id column="goods_address" property="address"/>
+        <id column="goods_person" property="person"/>
+        <id column="goods_tel" property="tel"/>
+        <id column="goods_qq" property="qq"/>
+        <id column="goods_cover1" property="goods_cover1"/>
+        <id column="goods_cover2" property="goods_cover2"/>
+
+        <id column="goods_is_use" property="isUse"/>
+        <id column="goods_is_del" property="isDel"/>
+        <id column="up_time" property="upTime"/>
+        <id column="goods_count" property="count"/>
+        <id column="goods_count_sale" property="goods_count_sale"/>
+        <id column="goods_position" property="goods_position"/>
+        <id column="is_zhiying" property="is_zhiying"/>
+        <id column="is_dxk" property="is_dxk"/>
+        <id column="pv_prices" property="pv_prices"/>
+
+        <id column="goods_emp_id" property="empId"/>
+        <id column="manager_id" property="manager_id"/>
+
+        <id column="type_name" property="type_name"/>
+
+        <id column="nick_name" property="nickName"/>
+        <id column="emp_cover" property="empCover"/>
+        <id column="managerName" property="managerName"/>
+        <id column="managerCover" property="managerCover"/>
+
+        <id column="mm_paihang_id" property="mm_paihang_id"/>
+        <id column="is_tuijian" property="is_tuijian"/>
+        <id column="lx_class_id" property="lx_class_id"/>
+        <id column="top_number" property="top_number"/>
+        <id column="is_zhekou" property="is_zhekou"/>
+        <id column="zhekou_number" property="zhekou_number"/>
+        <id column="dianpu_number" property="dianpu_number"/>
+
+    </resultMap>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.PaopaoGoods">
+        INSERT INTO PAOPAO_GOODS (goods_id, goods_type_id, GOODS_NAME, GOODS_COVER, GOODS_CONT, SELL_PRICE,
+        MARKET_PRICE, GOODS_ADDRESS,GOODS_PERSON, GOODS_TEL, GOODS_QQ, GOODS_EMP_ID, GOODS_IS_USE
+        ,GOODS_IS_DEL, UP_TIME, GOODS_COUNT,goods_count_sale, GOODS_POSITION, is_zhiying,
+        manager_id,goods_cover1,goods_cover2,is_dxk,pv_prices,lx_class_id,is_zhekou,zhekou_number, dianpu_number)
+
+        VALUES (#{id}, #{typeId}, #{name}, #{cover, jdbcType=VARCHAR},#{cont}, #{sellPrice}, #{marketPrice},
+        #{address, jdbcType=VARCHAR}, #{person, jdbcType=VARCHAR}, #{tel, jdbcType=VARCHAR}, #{qq, jdbcType=VARCHAR},
+         #{empId}, #{isUse}, #{isDel}, #{upTime}, #{count, jdbcType=VARCHAR}, 0,0,
+         #{is_zhiying, jdbcType=VARCHAR}, #{manager_id, jdbcType=VARCHAR}, #{goods_cover1, jdbcType=VARCHAR},
+          #{goods_cover2, jdbcType=VARCHAR}, #{is_dxk, jdbcType=VARCHAR}
+         , #{pv_prices, jdbcType=VARCHAR}, #{lx_class_id, jdbcType=VARCHAR}, #{is_zhekou, jdbcType=VARCHAR},
+         #{zhekou_number, jdbcType=VARCHAR}, #{dianpu_number, jdbcType=VARCHAR})
+    </insert>
+
+    <select id="listByEmpSchool" resultMap="my_paopao_goods" parameterType="String">
+        SELECT * FROM PAOPAO_GOODS WHERE GOODS_EMP_ID=#{empId}
+    </select>
+
+    <select id="listGoods" resultMap="my_paopao_goods_vo">
+        SELECT pg.*,
+        ltype.type_name as type_name ,
+        lemp.emp_name as nick_name,
+        lemp.emp_cover as emp_cover,
+        lmg.manager_cover as managerCover,
+        lmg.manager_admin as managerName,
+        lph.mm_paihang_id as mm_paihang_id,
+        lclass.lx_class_name as lx_class_name
+        FROM PAOPAO_GOODS pg
+        LEFT JOIN lx_goods_type ltype ON ltype.type_id = pg.goods_type_id
+        LEFT JOIN lx_emp lemp ON lemp.emp_id = pg.goods_emp_id
+        LEFT JOIN lx_manager lmg ON lmg.manager_id = pg.manager_id
+        LEFT JOIN manager_info lmanager ON lmanager.emp_id = pg.goods_emp_id
+        LEFT JOIN mm_paihang lph ON lph.goods_id = pg.goods_id
+        LEFT JOIN lx_class lclass ON lclass.lx_class_id = pg.lx_class_id
+        WHERE  pg.goods_is_del='0'
+        <if test="goods_count != null and goods_count != ''">
+            AND pg.goods_count != '0'
+        </if>
+
+        <if test="schoolIds != null and schoolIds != ''">
+            AND pg.goods_type_id IN
+            <foreach collection="schoolIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+
+        <if test="isUse != null and isUse != ''">
+            AND pg.goods_is_use=#{isUse}
+        </if>
+        <if test="is_dxk != null and is_dxk != ''">
+            AND pg.is_dxk=#{is_dxk}
+        </if>
+        <if test="cont !=null and cont !=''">
+            AND (pg.goods_name like CONCAT('%',#{cont},'%') OR pg.GOODS_CONT like CONCAT('%',#{cont},'%') )
+        </if>
+        <if test="empId != null and empId != ''">
+            AND pg.goods_emp_id=#{empId}
+        </if>
+        <if test="is_zhiying != null and is_zhiying != ''">
+            AND pg.is_zhiying=#{is_zhiying}
+        </if>
+        <if test="goods_position != null and goods_position != ''">
+            AND pg.goods_position=#{goods_position}
+        </if>
+        <if test="manager_id != null and manager_id != ''">
+            AND pg.manager_id=#{manager_id}
+        </if>
+
+        <if test="lat_company != null and lat_company != ''">
+            AND lmanager.lat_company > (#{lat_company}-1) AND   (#{lat_company} + 1) > lmanager.lat_company
+        </if>
+        <if test="lng_company != null and lng_company != ''">
+            AND lmanager.lng_company > (#{lng_company}-1) AND   (#{lng_company} + 1) > lmanager.lng_company
+        </if>
+
+        <if test="lat_company != null and lat_company != '' and lng_company != null and lng_company != ''">
+            order by ACOS(SIN((#{lat_company} * 3.1415) / 180 ) *SIN((lmanager.lat_company * 3.1415) / 180 ) +COS((#{lat_company} * 3.1415) / 180 ) * COS((lmanager.lat_company * 3.1415) / 180 ) *COS((#{lng_company}* 3.1415) / 180 - (lmanager.lng_company * 3.1415) / 180 ) ) * 6380 asc
+        </if>
+
+        <if test="is_time != null and is_time != ''">
+            ORDER BY pg.up_time DESC
+        </if>
+
+        <if test="is_count != null and is_count != ''">
+            ORDER BY pg.goods_count_sale DESC
+        </if>
+
+        <if test="goods_position != null and goods_position != ''">
+            ORDER BY pg.top_number DESC
+        </if>
+
+        <if test="dianpu_number != null and dianpu_number != ''">
+            ORDER BY pg.dianpu_number DESC
+        </if>
+
+        limit #{index},#{size}
+    </select>
+
+    <select id="count" resultType="Long">
+        SELECT count(pg.GOODS_ID)
+        FROM PAOPAO_GOODS pg
+        LEFT JOIN lx_goods_type ltype ON ltype.type_id = pg.goods_type_id
+        LEFT JOIN lx_emp lemp ON lemp.emp_id = pg.goods_emp_id
+        LEFT JOIN lx_manager lmg ON lmg.manager_id = pg.manager_id
+        LEFT JOIN manager_info lmanager ON lmanager.emp_id = pg.goods_emp_id
+        WHERE  pg.goods_is_del='0'
+        <if test="goods_count != null and goods_count != ''">
+            AND pg.goods_count != '0'
+        </if>
+        <if test="schoolIds != null and schoolIds != ''">
+            AND pg.goods_type_id IN
+            <foreach collection="schoolIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        <if test="isUse != null and isUse != ''">
+            AND pg.goods_is_use=#{isUse}
+        </if>
+        <if test="is_dxk != null and is_dxk != ''">
+            AND pg.is_dxk=#{is_dxk}
+        </if>
+        <if test="cont !=null and cont !=''">
+            AND (pg.goods_name like CONCAT('%',#{cont},'%') OR pg.GOODS_CONT like CONCAT('%',#{cont},'%') )
+        </if>
+        <if test="empId != null and empId != ''">
+            AND pg.goods_emp_id=#{empId}
+        </if>
+
+        <if test="is_zhiying != null and is_zhiying != ''">
+            AND pg.is_zhiying=#{is_zhiying}
+        </if>
+
+        <if test="goods_position != null and goods_position != ''">
+            AND pg.goods_position=#{goods_position}
+        </if>
+
+        <if test="manager_id != null and manager_id != ''">
+            AND pg.manager_id=#{manager_id}
+        </if>
+
+        <if test="lat_company != null and lat_company != ''">
+            AND lmanager.lat_company > (#{lat_company}-1) AND   (#{lat_company} + 1) > lmanager.lat_company
+        </if>
+        <if test="lng_company != null and lng_company != ''">
+            AND lmanager.lng_company > (#{lng_company}-1) AND   (#{lng_company} + 1) > lmanager.lng_company
+        </if>
+
+    </select>
+
+    <update id="deleteById" parameterType="String">
+        UPDATE PAOPAO_GOODS SET GOODS_IS_DEL='1' WHERE GOODS_ID=#{id}
+    </update>
+
+    <select id="findById" resultMap="my_paopao_goods" parameterType="String">
+        SELECT * FROM PAOPAO_GOODS WHERE GOODS_ID=#{id}
+    </select>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.PaopaoGoods">
+        UPDATE PAOPAO_GOODS SET
+        GOODS_NAME=#{name},
+        GOODS_TYPE_ID=#{typeId},
+        GOODS_COVER=#{cover},
+        SELL_PRICE=#{sellPrice},
+        MARKET_PRICE=#{marketPrice},
+        GOODS_ADDRESS=#{address},
+        goods_cover1=#{goods_cover1},
+        goods_cover2=#{goods_cover2},
+        GOODS_PERSON=#{person},
+        GOODS_TEL=#{tel},
+        GOODS_QQ=#{qq},
+        GOODS_COUNT=#{count},
+        GOODS_CONT=#{cont},
+        goods_is_use=#{isUse},
+        goods_is_del=#{isDel},
+        is_dxk=#{is_dxk},
+        lx_class_id=#{lx_class_id},
+        pv_prices=#{pv_prices},
+        is_zhekou=#{is_zhekou},
+        zhekou_number=#{zhekou_number},
+        dianpu_number=#{dianpu_number}
+        WHERE GOODS_ID=#{id}
+    </update>
+
+    <update id="updatePosition" parameterType="com.liangxunwang.unimanager.model.PaopaoGoods">
+        UPDATE PAOPAO_GOODS SET
+        top_number=#{top_number},
+        goods_position=#{goods_position}
+        WHERE GOODS_ID=#{id}
+    </update>
+
+    <select id="findGoodsVO" parameterType="String" resultMap="my_paopao_goods_vo">
+        SELECT pg.* ,
+        ltype.type_name as type_name,
+        lemp.emp_name as nick_name,
+        lemp.emp_cover as emp_cover,
+        lmg.emp_cover as managerCover,
+        lmg.emp_name as managerName
+        FROM PAOPAO_GOODS pg
+         LEFT JOIN lx_goods_type ltype ON ltype.type_id = pg.goods_type_id
+         LEFT JOIN lx_emp lemp ON lemp.emp_id = pg.goods_emp_id
+         LEFT JOIN lx_emp lmg ON lmg.emp_id = pg.goods_emp_id
+        WHERE pg.GOODS_ID=#{id}
+    </select>
+
+    <update id="updateCountById" parameterType="String">
+        UPDATE PAOPAO_GOODS SET GOODS_COUNT = GOODS_COUNT - #{goodsCount}, goods_count_sale = goods_count_sale + #{goods_count_sale}  WHERE GOODS_ID=#{id}
+    </update>
+
+    <update id="deleteGoodsById">
+        UPDATE PAOPAO_GOODS SET goods_is_del='1' WHERE goods_emp_id=#{empId}
+    </update>
+
+    <update id="deleteGoodsByEmp" parameterType="String">
+        UPDATE PAOPAO_GOODS SET goods_is_del='1' WHERE GOODS_EMP_ID=#{empId}
+    </update>
+
+    <update id="updatePostionById" parameterType="String">
+        UPDATE PAOPAO_GOODS SET goods_is_use= #{goods_is_use} WHERE goods_id=#{id}
+    </update>
+
+    <update id="updateJiaById" parameterType="String">
+        UPDATE PAOPAO_GOODS SET goods_is_use= #{status} WHERE goods_id=#{id}
+    </update>
+
+    <select id="listGoodsAll" resultMap="my_paopao_goods_vo">
+        SELECT pg.*,ltype.type_name as type_name
+        FROM PAOPAO_GOODS pg
+        LEFT JOIN lx_goods_type ltype ON ltype.type_id = pg.goods_type_id
+        WHERE  pg.goods_is_del='0' AND pg.goods_is_use = '0'
+        <if test="typeId != null and typeId != ''">
+            AND pg.goods_type_id=#{typeId}
+        </if>
+        <if test="cont !=null and cont !=''">
+            AND (pg.goods_name like CONCAT('%',#{cont},'%') OR pg.GOODS_CONT like CONCAT('%',#{cont},'%') )
+        </if>
+        <if test="empId != null and empId != ''">
+            AND pg.goods_emp_id=#{empId}
+        </if>
+        <if test="manager_id != null and manager_id != ''">
+            AND pg.manager_id=#{manager_id}
+        </if>
+        ORDER BY pg.up_time DESC
+    </select>
+
+    <select id="listLikes" resultMap="my_paopao_goods_vo">
+        SELECT pg.*,
+        ltype.type_name as type_name ,
+        lemp.emp_name as nick_name,
+        lemp.emp_cover as emp_cover,
+        lmg.manager_cover as managerCover,
+        lmg.manager_admin as managerName,
+        lclass.lx_class_name as lx_class_name
+        FROM PAOPAO_GOODS pg
+        LEFT JOIN lx_goods_type ltype ON ltype.type_id = pg.goods_type_id
+        LEFT JOIN lx_emp lemp ON lemp.emp_id = pg.goods_emp_id
+        LEFT JOIN lx_manager lmg ON lmg.manager_id = pg.manager_id
+        LEFT JOIN manager_info lmanager ON lmanager.emp_id = pg.goods_emp_id
+        LEFT JOIN lx_class lclass ON lclass.lx_class_id = pg.lx_class_id
+        WHERE  pg.goods_is_del='0' AND pg.goods_is_use = '0' AND pg.goods_position = '1'
+        <if test="cont !=null and cont !=''">
+            AND (pg.goods_name like CONCAT('%',#{cont},'%') OR pg.GOODS_CONT like CONCAT('%',#{cont},'%') )
+        </if>
+        ORDER by pg.top_number DESC
+        limit #{index},#{size}
+    </select>
+
+    <select id="countZero" resultType="Long">
+        SELECT count(pg.GOODS_ID)
+        FROM PAOPAO_GOODS pg
+        WHERE  pg.goods_is_del='0' AND  pg.goods_is_use = '0' AND  pg.goods_count  &lt; 5
+        <if test="empId != null and empId != ''">
+            AND pg.goods_emp_id=#{empId}
+        </if>
+    </select>
+</mapper>

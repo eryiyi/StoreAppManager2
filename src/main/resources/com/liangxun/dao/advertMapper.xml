@@ -1,0 +1,83 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.AdvertDao">
+    <resultMap id="my_advert" type="com.liangxunwang.unimanager.model.Advert">
+        <id column="ad_id" property="adId"/>
+        <result column="ad_pic" property="adPic"/>
+        <result column="ad_typeid" property="adTypeId"/>
+        <result column="ad_isuse" property="adIsUse"/>
+        <result column="ad_school_id" property="adSchoolId"/>
+        <result column="dateline" property="dateline"/>
+        <result column="ad_url" property="adUrl"/>
+        <result column="end_time" property="endTime"/>
+        <result column="emp_id" property="emp_id"/>
+    </resultMap>
+
+    <resultMap id="my_advert_vo" type="com.liangxunwang.unimanager.mvc.vo.AdvertVO">
+        <id column="ad_id" property="adId"/>
+        <result column="ad_pic" property="adPic"/>
+        <result column="ad_typeid" property="adTypeId"/>
+        <result column="ad_isuse" property="adIsUse"/>
+        <result column="ad_school_id" property="adSchoolId"/>
+        <result column="dateline" property="dateline"/>
+        <result column="ad_url" property="adUrl"/>
+        <result column="end_time" property="endTime"/>
+        <result column="emp_id" property="emp_id"/>
+        <result column="school_name" property="schoolName"/>
+    </resultMap>
+
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.Advert">
+        INSERT INTO school_ad
+        (ad_id, ad_pic, ad_typeid, ad_isuse, ad_school_id, dateline, ad_url, end_time, emp_id)
+        VALUES
+        (#{adId}, #{adPic}, #{adTypeId}, #{adIsUse}, #{adSchoolId}, #{dateline}, #{adUrl}, #{endTime}, #{emp_id, jdbcType=VARCHAR})
+    </insert>
+
+    <select id="list" resultMap="my_advert_vo">
+        SELECT sa.*
+        from school_ad sa
+        WHERE 1=1
+        <if test="emp_id != null and emp_id != ''">
+            AND sa.emp_id=#{emp_id}
+        </if>
+        ORDER BY sa.dateline DESC
+        limit #{index},#{size}
+    </select>
+
+    <select id="count" resultType="long">
+        select count(sa.ad_school_id) from school_ad sa
+        left join college ls on sa.ad_school_id=ls.coid
+        WHERE 1=1
+        <if test="emp_id != null and emp_id != ''">
+            AND sa.emp_id=#{emp_id}
+        </if>
+    </select>
+
+    <select id="findById" resultMap="my_advert" parameterType="String">
+        SELECT * from school_ad where ad_id=#{adId}
+    </select>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.Advert">
+      UPDATE school_ad SET ad_pic=#{adPic},ad_typeid=#{adTypeId}, ad_isuse=#{adIsUse}, ad_school_id=#{adSchoolId},
+      dateline=#{dateline}, ad_url=#{adUrl}, end_time=#{endTime} WHERE ad_id=#{adId}
+    </update>
+
+    <delete id="deleteById">
+        DELETE FROM school_ad where ad_id=#{adId}
+    </delete>
+
+    <select id="getBig" resultMap="my_advert" parameterType="String">
+        SELECT * FROM school_ad WHERE ad_isuse='0' AND ad_typeId=#{typeId} AND ad_typeid='1'
+    </select>
+
+    <select id="getSmall" resultMap="my_advert" parameterType="String">
+        SELECT * FROM school_ad WHERE ad_isuse='0' AND ad_school_id=#{schoolId} AND ad_typeid='0'
+    </select>
+
+    <update id="updateOverTime">
+        UPDATE school_ad SET ad_isuse='1' WHERE end_time &lt; #{nowTime}
+    </update>
+</mapper>

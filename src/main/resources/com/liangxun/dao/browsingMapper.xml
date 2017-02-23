@@ -1,0 +1,59 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.BrowsingDao">
+    <resultMap id="browsing" type="com.liangxunwang.unimanager.model.BrowsingObj">
+        <id column="browsingid" property="browsingid"/>
+        <result column="empid" property="empid"/>
+        <result column="emp_id_dianpu" property="emp_id_dianpu"/>
+        <result column="goodsid" property="goodsid"/>
+        <result column="dateline" property="dateline"/>
+    </resultMap>
+
+    <resultMap id="browsingvo" type="com.liangxunwang.unimanager.mvc.vo.BrowsingVo">
+        <id column="browsingid" property="browsingid"/>
+        <result column="empid" property="empid"/>
+        <result column="emp_id_dianpu" property="emp_id_dianpu"/>
+        <result column="goodsid" property="goodsid"/>
+        <result column="dateline" property="dateline"/>
+        <result column="goods_name" property="goods_name"/>
+        <result column="goods_cover" property="goods_cover"/>
+    </resultMap>
+
+    <select id="lists" resultMap="browsingvo">
+        SELECT sn.*,lg.goods_name as goods_name,lg.goods_cover as goods_cover from lx_browsing sn
+        LEFT  JOIN paopao_goods lg ON lg.goods_id = sn.goodsid
+        WHERE 1=1
+        <if test="empid != null and empid != ''">
+            AND sn.empid = #{empid}
+        </if>
+        <if test="goodsid != null and goodsid != ''">
+            AND sn.goodsid = #{goodsid}
+        </if>
+        ORDER BY sn.dateline DESC
+        limit #{index},#{size}
+    </select>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.BrowsingObj">
+        INSERT INTO lx_browsing(browsingid, empid, goodsid,dateline,emp_id_dianpu)
+        VALUES (#{browsingid}, #{empid}, #{goodsid}, #{dateline}, #{emp_id_dianpu, jdbcType=VARCHAR})
+    </insert>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.BrowsingObj">
+        UPDATE lx_browsing SET dateline=#{dateline}
+         WHERE browsingid=#{browsingid}
+    </update>
+
+    <select id="count" resultType="Long">
+        SELECT count(browsingid) FROM lx_browsing
+        WHERE 1=1
+        <if test="empid != null and empid != ''">
+            AND empid = #{empid}
+        </if>
+        <if test="goodsid != null and goodsid != ''">
+            AND goodsid = #{goodsid}
+        </if>
+    </select>
+
+</mapper>

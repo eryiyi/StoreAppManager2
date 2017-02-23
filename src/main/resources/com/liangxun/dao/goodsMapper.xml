@@ -1,0 +1,120 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.GoodsDao">
+    <resultMap id="my_goods" type="com.liangxunwang.unimanager.model.Goods">
+        <id column="goods_id" property="id"/>
+        <result column="goodstype_id" property="typeId"/>
+        <result column="goods_name" property="name"/>
+        <result column="goods_cover" property="cover"/>
+        <result column="goods_cont" property="content"/>
+        <result column="goods_money" property="money"/>
+        <result column="goods_emp_id" property="empId"/>
+        <result column="goods_school_id" property="schoolId" javaType="java.lang.String"/>
+        <result column="goods_is_use" property="isUse"/>
+        <result column="goods_is_del" property="isDel"/>
+        <result column="dateline" property="dateline"/>
+        <result column="goods_address" property="address"/>
+        <result column="goods_person" property="person"/>
+        <result column="goods_tel" property="tel"/>
+        <result column="goods_position" property="position"/>
+    </resultMap>
+
+    <resultMap id="my_goods_vo" type="com.liangxunwang.unimanager.mvc.vo.GoodsVO">
+        <id column="goods_id" property="id"/>
+        <result column="goodstype_id" property="typeId"/>
+        <result column="goods_name" property="name"/>
+        <result column="goods_cover" property="cover"/>
+        <result column="goods_cont" property="content"/>
+        <result column="goods_money" property="money"/>
+        <result column="goods_emp_id" property="empId"/>
+        <result column="goods_school_id" property="schoolId"/>
+        <result column="goods_is_use" property="isUse"/>
+        <result column="goods_is_del" property="isDel"/>
+        <result column="dateline" property="dateline"/>
+        <result column="goods_position" property="position"/>
+        <result column="goods_address" property="address"/>
+        <result column="goods_person" property="person"/>
+        <result column="goods_tel" property="tel"/>
+        <result column="nick_name" property="nickName"/>
+        <result column="emp_cover" property="empCover"/>
+        <result column="mobile" property="mobile"/>
+        <result column="school_name" property="schoolName"/>
+    </resultMap>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.Goods">
+        INSERT INTO lx_goods (goods_id, goodstype_id, goods_name, goods_cover, goods_cont, goods_money, goods_emp_id, goods_school_id, goods_is_use, goods_is_del, dateline,
+        goods_address,goods_person,goods_tel,goods_position )
+        VALUES (#{id}, #{typeId}, #{name}, #{cover}, #{content}, #{money}, #{empId}, #{schoolId}, #{isUse}, #{isDel}, #{dateline},
+        #{address}, #{person}, #{tel},#{position})
+    </insert>
+
+    <select id="findListByType" resultMap="my_goods_vo">
+
+        SELECT lg.*, le.emp_name as nick_name, le.emp_cover as emp_cover, le.emp_mobile as mobile
+        FROM lx_goods lg
+        LEFT JOIN lx_emp le ON lg.goods_emp_id=le.emp_id
+        WHERE lg.goods_is_use='0' AND le.is_use='0'
+        AND lg.goods_is_del='0'
+        <if test="typeId != null and typeId != ''">
+          AND lg.goodstype_id=#{typeId}
+        </if>
+        <if test="cont !=null and cont !=''">
+          AND (lg.goods_name like CONCAT('%',#{cont},'%') OR lg.goods_cont like CONCAT('%',#{cont},'%') )
+        </if>
+        <if test="empId != null and empId != ''">
+          AND lg.goods_emp_id=#{empId}
+        </if>
+        <if test="schoolIds != null and schoolIds != ''">
+            AND lg.goods_school_id IN
+            <foreach collection="schoolIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+        ORDER BY lg.goods_position DESC , lg.dateline DESC
+     limit #{index},#{size}
+    </select>
+
+    <select id="findByGoodsId" parameterType="String" resultMap="my_goods_vo">
+        SELECT lg.*, le.emp_name as nick_name, le.emp_cover as emp_cover, le.emp_mobile as mobile
+        FROM lx_goods lg
+        LEFT JOIN lx_emp le ON lg.goods_emp_id=le.emp_id
+        WHERE lg.goods_is_use='0' AND le.is_use='0'
+        AND lg.goods_is_del='0'
+        AND lg.goods_id=#{id}
+    </select>
+
+    <update id="downGoods" parameterType="String">
+      UPDATE lx_goods SET goods_is_use='1' WHERE goods_id=#{id}
+    </update>
+
+    <update id="deleteGoods" parameterType="String">
+        UPDATE lx_goods SET goods_is_del='1' WHERE goods_id=#{id}
+    </update>
+
+    <update id="deleteGoodsByEmp" parameterType="String">
+        UPDATE lx_goods SET goods_is_del='1' WHERE GOODS_EMP_ID=#{empId} AND GOODS_SCHOOL_ID=#{schoolId}
+    </update>
+
+    <update id="deleteGoodsById">
+        UPDATE lx_goods SET goods_is_del='1' WHERE goods_emp_id=#{empId}
+        <if test="schoolIds != null and schoolIds != ''">
+            AND goods_school_id IN
+            <foreach collection="schoolIds" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </update>
+    <update id="updatePosition" parameterType="String">
+        UPDATE LX_GOODS SET goods_position=#{position} WHERE GOODS_ID=#{goodsId}
+    </update>
+
+    <select id="findGoodsByEmpIdAndSchoolId" resultMap="my_goods" parameterType="String">
+        SELECT * FROM LX_GOODS
+        WHERE goods_is_use='0' AND goods_is_del='0'
+        AND GOODS_SCHOOL_ID=#{schoolId}
+        AND GOODS_EMP_ID=#{empId}
+    </select>
+
+</mapper>

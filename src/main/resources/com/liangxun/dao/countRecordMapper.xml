@@ -1,0 +1,68 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.CountRecordDao">
+    <resultMap id="countRecord" type="com.liangxunwang.unimanager.model.CountRecord">
+        <id column="lx_count_record_id" property="lx_count_record_id"/>
+        <result column="lx_count_record_cont" property="lx_count_record_cont"/>
+        <result column="lx_count_record_count" property="lx_count_record_count"/>
+        <result column="dateline" property="dateline"/>
+        <result column="emp_id" property="emp_id"/>
+
+        <result column="emp_mobile" property="emp_mobile"/>
+        <result column="emp_number" property="emp_number"/>
+        <result column="emp_name" property="emp_name"/>
+    </resultMap>
+
+    <select id="lists" resultMap="countRecord">
+        SELECT lr.* ,
+        lemp.emp_mobile as emp_mobile,
+        lemp.emp_number as emp_number,
+        lemp.emp_name as emp_name
+        from lx_count_record lr
+        LEFT JOIN lx_emp lemp ON lemp.emp_id = lr.emp_id
+        WHERE 1=1
+        <if test="emp_id != null and emp_id != ''">
+            AND lr.emp_id = #{emp_id}
+        </if>
+
+        <if test="phone_number != null and phone_number != ''">
+            AND lemp.emp_mobile like CONCAT('%',#{phone_number},'%')
+        </if>
+        <if test="keyWords != null and keyWords != ''">
+            AND lemp.emp_name like CONCAT('%',#{keyWords},'%')
+        </if>
+
+        ORDER BY lr.dateline DESC
+        limit #{index},#{size}
+    </select>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.CountRecord">
+        INSERT INTO lx_count_record(lx_count_record_id, lx_count_record_cont, lx_count_record_count, dateline, emp_id)
+        VALUES (#{lx_count_record_id}, #{lx_count_record_cont}, #{lx_count_record_count}, #{dateline}, #{emp_id})
+    </insert>
+
+    <select id="findById" parameterType="String" resultMap="countRecord">
+        SELECT * FROM lx_count_record where lx_count_record_id=#{lx_count_record_id}
+    </select>
+
+    <select id="count" resultType="long">
+        select count(le.lx_count_record_id)
+        from lx_count_record le
+        LEFT JOIN lx_emp lemp ON lemp.emp_id = le.emp_id
+        WHERE 1=1
+        <if test="emp_id != null and emp_id != ''">
+            AND le.emp_id = #{emp_id}
+        </if>
+
+        <if test="phone_number != null and phone_number != ''">
+            AND lemp.emp_mobile like CONCAT('%',#{phone_number},'%')
+        </if>
+        <if test="keyWords != null and keyWords != ''">
+            AND lemp.emp_name like CONCAT('%',#{keyWords},'%')
+        </if>
+
+    </select>
+
+</mapper>

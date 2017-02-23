@@ -1,0 +1,101 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.CardEmpDao">
+    <resultMap id="cardEmp" type="com.liangxunwang.unimanager.model.CardEmp">
+        <id column="emp_id" property="emp_id"/>
+        <result column="lx_card_emp_year" property="lx_card_emp_year"/>
+        <result column="lx_card_emp_start_time" property="lx_card_emp_start_time"/>
+        <result column="lx_card_emp_end_time" property="lx_card_emp_end_time"/>
+        <result column="is_use" property="is_use"/>
+
+        <result column="emp_number" property="emp_number"/>
+        <result column="emp_mobile" property="emp_mobile"/>
+        <result column="emp_name" property="emp_name"/>
+        <result column="emp_cover" property="emp_cover"/>
+    </resultMap>
+
+    <select id="lists" resultMap="cardEmp">
+        SELECT sn.*,lemp.emp_number as emp_number,lemp.emp_mobile as emp_mobile,lemp.emp_name as emp_name,lemp.emp_cover as emp_cover
+        from lx_card_emp sn
+        LEFT JOIN lx_emp lemp ON lemp.emp_id = sn.emp_id
+        WHERE 1=1
+        <if test="emp_id != null and emp_id != ''">
+            AND sn.emp_id = #{emp_id}
+        </if>
+        <if test="is_use != null and is_use != ''">
+            AND sn.is_use = #{is_use}
+        </if>
+        <if test="keyWords != null and keyWords != ''">
+            AND lemp.emp_name like CONCAT('%',#{keyWords},'%')
+        </if>
+        <if test="emp_mobile != null and emp_mobile != ''">
+            AND lemp.emp_mobile like CONCAT('%',#{emp_mobile},'%')
+        </if>
+        <if test="emp_number != null and emp_number != ''">
+            AND lemp.emp_number like CONCAT('%',#{emp_number},'%')
+        </if>
+
+        ORDER BY sn.lx_card_emp_start_time DESC
+        limit #{index},#{size}
+    </select>
+
+    <select id="count" resultType="Long">
+        SELECT count(sn.emp_id) FROM lx_card_emp sn
+        LEFT JOIN lx_emp lemp ON lemp.emp_id = sn.emp_id
+        WHERE 1=1
+        <if test="emp_id != null and emp_id != ''">
+            AND sn.emp_id = #{emp_id}
+        </if>
+        <if test="is_use != null and is_use != ''">
+            AND sn.is_use = #{is_use}
+        </if>
+        <if test="keyWords != null and keyWords != ''">
+            AND lemp.emp_name like CONCAT('%',#{keyWords},'%')
+        </if>
+        <if test="emp_mobile != null and emp_mobile != ''">
+            AND lemp.emp_mobile like CONCAT('%',#{emp_mobile},'%')
+        </if>
+        <if test="emp_number != null and emp_number != ''">
+            AND lemp.emp_number like CONCAT('%',#{emp_number},'%')
+        </if>
+    </select>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.CardEmp">
+        INSERT INTO lx_card_emp(emp_id, lx_card_emp_year, lx_card_emp_start_time, lx_card_emp_end_time, is_use)
+        VALUES (#{emp_id}, #{lx_card_emp_year}, #{lx_card_emp_start_time}, #{lx_card_emp_end_time}, #{is_use})
+    </insert>
+
+    <select id="findById" parameterType="String" resultMap="cardEmp">
+         SELECT sn.*,lemp.emp_number as emp_number,lemp.emp_mobile as emp_mobile,lemp.emp_name as emp_name,lemp.emp_cover as emp_cover
+        from lx_card_emp sn
+        LEFT JOIN lx_emp lemp ON lemp.emp_id = sn.emp_id
+        WHERE sn.emp_id=#{emp_id}
+    </select>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.CardEmp">
+        UPDATE lx_card_emp SET lx_card_emp_year=#{lx_card_emp_year},
+        lx_card_emp_end_time=#{lx_card_emp_end_time} ,
+         is_use=#{is_use}
+         WHERE emp_id=#{emp_id}
+    </update>
+
+    <!--执行定向卡会员表到期的-->
+    <update id="updateOverTime">
+        UPDATE lx_card_emp SET is_use='1' WHERE lx_card_emp_end_time &lt; #{nowTime}
+    </update>
+    <!--执行会员表到期的-->
+    <update id="updateOverTime2">
+        UPDATE lx_emp lemp
+
+        LEFT JOIN lx_card_emp lcard ON lcard.emp_id = lemp.emp_id
+
+        SET lemp.is_card_emp = '0'
+
+        WHERE lcard.lx_card_emp_end_time &lt; #{nowTime}
+    </update>
+
+
+
+</mapper>

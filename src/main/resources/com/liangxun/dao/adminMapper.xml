@@ -1,0 +1,183 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.AdminDao">
+    <resultMap id="my_admin" type="com.liangxunwang.unimanager.model.Admin">
+        <id column="manager_id" property="id"/>
+        <result column="manager_admin" property="username"/>
+        <result column="manager_pass" property="password"/>
+        <result column="is_use" property="isUse"/>
+        <result column="emp_id" property="emp_id"/>
+        <result column="manager_cover" property="manager_cover"/>
+        <result column="permissions" property="permissions"/>
+        <result column="is_pingtai" property="is_pingtai"/>
+        <result column="is_daili" property="is_daili"/>
+    </resultMap>
+
+    <resultMap id="my_admin_vo" type="com.liangxunwang.unimanager.mvc.vo.AdminVO">
+        <id column="manager_id" property="id"/>
+        <result column="manager_admin" property="username"/>
+        <result column="manager_pass" property="password"/>
+        <result column="is_use" property="isUse"/>
+        <result column="emp_id" property="emp_id"/>
+        <result column="manager_cover" property="manager_cover"/>
+        <result column="permissions" property="permissions"/>
+        <result column="is_pingtai" property="is_pingtai"/>
+        <result column="is_daili" property="is_daili"/>
+
+        <result column="emp_number" property="emp_number"/>
+        <result column="empMobile" property="empMobile"/>
+
+        <result column="company_name" property="company_name"/>
+        <result column="company_tel" property="company_tel"/>
+        <result column="company_person" property="company_person"/>
+    </resultMap>
+
+    <select id="findByUsername" resultMap="my_admin_vo" parameterType="String">
+        SELECT sn.*,le.emp_number as emp_number, le.emp_mobile as empMobile
+        from lx_manager sn
+          LEFT JOIN  lx_emp le ON le.emp_id = sn.emp_id
+        WHERE sn.manager_admin=#{username}
+    </select>
+
+    <select id="findByEmpId" resultMap="my_admin_vo" parameterType="String">
+        SELECT sn.*,le.emp_number as emp_number, le.emp_mobile as empMobile
+         from lx_manager  sn
+          LEFT JOIN  lx_emp le ON le.emp_id = sn.emp_id
+         WHERE sn.EMP_ID=#{empId}
+    </select>
+
+    <select id="findById" resultMap="my_admin_vo" parameterType="String">
+        SELECT sn.*,le.emp_number as emp_number, le.emp_mobile as empMobile
+         from lx_manager sn
+        LEFT JOIN  lx_emp le ON le.emp_id = sn.emp_id
+        WHERE sn.manager_id=#{id}
+    </select>
+
+    <insert id="add" parameterType="com.liangxunwang.unimanager.model.Admin">
+        INSERT INTO LX_MANAGER(MANAGER_ID, MANAGER_ADMIN, MANAGER_PASS, IS_USE, PERMISSIONS, emp_id, manager_cover,is_daili)
+         VALUES (#{id}, #{username}, #{password}, #{isUse}, #{permissions, jdbcType=VARCHAR}, #{emp_id, jdbcType=VARCHAR}, #{manager_cover, jdbcType=VARCHAR}, #{is_daili, jdbcType=VARCHAR})
+    </insert>
+
+    <delete id="delete" parameterType="String">
+        DELETE FROM LX_MANAGER WHERE EMP_ID=#{id}
+    </delete>
+
+    <update id="updatePass" parameterType="String">
+        UPDATE LX_MANAGER SET MANAGER_PASS=#{pass} WHERE MANAGER_ID=#{id}
+    </update>
+
+    <update id="updateRoles" parameterType="String">
+        UPDATE LX_MANAGER SET permissions=#{permissions} WHERE MANAGER_ID=#{id}
+    </update>
+
+    <update id="updateType" parameterType="String">
+        UPDATE LX_MANAGER SET is_use=#{is_use} WHERE MANAGER_ID=#{id}
+    </update>
+
+    <select id="lists" resultMap="my_admin_vo">
+        SELECT sn.*,
+        le.emp_number as emp_number,
+        le.emp_mobile as empMobile,
+        lma.company_name as company_name,
+        lma.company_tel as company_tel,
+        lma.company_person as company_person
+        from LX_MANAGER sn
+        LEFT JOIN  lx_emp le ON le.emp_id = sn.emp_id
+        LEFT JOIN manager_info lma ON lma.emp_id = sn.emp_id
+        WHERE 1=1 AND  sn.emp_id = '0'
+        <if test="is_use != null and is_use != ''">
+            AND sn.is_use = #{is_use}
+        </if>
+        <if test="cont !=null and cont !=''">
+            AND (le.emp_name like CONCAT('%',#{cont},'%') OR le.emp_mobile like CONCAT('%',#{cont},'%') )
+        </if>
+        limit #{index},#{size}
+    </select>
+
+    <select id="listsSj" resultMap="my_admin_vo">
+        SELECT sn.*,
+        le.emp_number as emp_number,
+        le.emp_mobile as empMobile,
+        lma.company_name as company_name,
+        lma.company_tel as company_tel,
+        lma.company_person as company_person
+        from LX_MANAGER sn
+        LEFT JOIN lx_emp le ON le.emp_id = sn.emp_id
+        LEFT JOIN manager_info lma ON lma.emp_id = sn.emp_id
+        WHERE 1=1 AND  sn.emp_id !=  '0'
+        <if test="is_use != null and is_use != ''">
+            AND sn.is_use = #{is_use}
+        </if>
+        <if test="cont !=null and cont !=''">
+            AND (le.emp_name like CONCAT('%',#{cont},'%') OR le.emp_mobile like CONCAT('%',#{cont},'%') )
+        </if>
+        limit #{index},#{size}
+    </select>
+
+    <select id="listsDl" resultMap="my_admin_vo">
+        SELECT sn.*,le.emp_number as emp_number, le.emp_mobile as empMobile
+        from LX_MANAGER sn
+        LEFT JOIN  lx_emp le ON le.emp_id = sn.emp_id
+        WHERE 1=1 AND  sn.emp_id !=  '0' AND sn.is_daili = '1'
+        <if test="is_use != null and is_use != ''">
+            AND sn.is_use = #{is_use}
+        </if>
+        <if test="cont !=null and cont !=''">
+            AND (le.emp_name like CONCAT('%',#{cont},'%') OR le.emp_mobile like CONCAT('%',#{cont},'%') )
+        </if>
+        limit #{index},#{size}
+    </select>
+
+    <select id="count" resultType="Long">
+        SELECT count(sn.manager_id) FROM LX_MANAGER sn
+        LEFT JOIN  lx_emp le ON le.emp_id = sn.emp_id
+        WHERE 1=1  AND  sn.emp_id =  '0'
+        <if test="is_use != null and is_use != ''">
+            AND sn.is_use = #{is_use}
+        </if>
+        <if test="cont !=null and cont !=''">
+            AND (le.emp_name like CONCAT('%',#{cont},'%') OR le.emp_mobile like CONCAT('%',#{cont},'%') )
+        </if>
+    </select>
+
+    <select id="countSj" resultType="Long">
+        SELECT count(sn.manager_id) FROM LX_MANAGER sn
+        LEFT JOIN  lx_emp le ON le.emp_id = sn.emp_id
+        WHERE 1=1 AND  sn.emp_id !=  '0'
+        <if test="is_use != null and is_use != ''">
+            AND sn.is_use = #{is_use}
+        </if>
+        <if test="cont !=null and cont !=''">
+            AND (le.emp_name like CONCAT('%',#{cont},'%') OR le.emp_mobile like CONCAT('%',#{cont},'%') )
+        </if>
+    </select>
+    <select id="countDl" resultType="Long">
+        SELECT count(sn.manager_id) FROM LX_MANAGER sn
+        LEFT JOIN  lx_emp le ON le.emp_id = sn.emp_id
+        WHERE 1=1 AND  sn.emp_id !=  '0' AND sn.is_daili = '1'
+        <if test="is_use != null and is_use != ''">
+            AND sn.is_use = #{is_use}
+        </if>
+        <if test="cont !=null and cont !=''">
+            AND (le.emp_name like CONCAT('%',#{cont},'%') OR le.emp_mobile like CONCAT('%',#{cont},'%') )
+        </if>
+    </select>
+
+
+
+    <select id="listsEmpIds" resultMap="my_admin_vo">
+        SELECT sn.*
+        from LX_MANAGER sn
+        WHERE 1=1
+        <if test="empids != null and empids != ''">
+            AND sn.emp_id IN
+            <foreach collection="empids" item="item" open="(" separator="," close=")">
+                #{item}
+            </foreach>
+        </if>
+    </select>
+
+
+</mapper>

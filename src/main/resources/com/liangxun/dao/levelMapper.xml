@@ -1,0 +1,36 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.LevelDao">
+    <resultMap id="my_level" type="com.liangxunwang.unimanager.model.Level">
+        <id column="level_id" property="levelId"/>
+        <result column="level_name" property="levelName"/>
+        <result column="level_start" property="levelStart"/>
+        <result column="level_end" property="levelEnd"/>
+        <result column="level_zhe" property="level_zhe"/>
+    </resultMap>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.Level">
+        INSERT INTO lx_level(level_id, level_name, level_start, level_end )
+        VALUES (#{levelId}, #{levelName}, #{levelStart}, #{levelEnd})
+    </insert>
+
+    <select id="list" resultMap="my_level">
+        SELECT * from lx_level ORDER BY level_start ASC
+    </select>
+
+    <delete id="delete">
+        DELETE FROM lx_level where level_id=#{levelId}
+    </delete>
+
+    <select id="findById" parameterType="String" resultMap="my_level">
+        SELECT * FROM lx_level where level_id=#{level_id}
+    </select>
+
+    <update id="update" parameterType="com.liangxunwang.unimanager.model.Level">
+        UPDATE lx_level SET level_name=#{levelName}, level_start=#{levelStart},level_zhe=#{level_zhe},
+        level_end=#{levelEnd}  WHERE level_id=#{levelId}
+    </update>
+
+</mapper>

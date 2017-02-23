@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.PkPrizeDao">
+    <resultMap id="my_prize" type="com.liangxunwang.unimanager.model.PkPrize">
+        <id column="prize_id" property="id"/>
+        <result column="theme_id" property="themeId"/>
+        <result column="prize_content" property="content"/>
+        <result column="prize_pic" property="pic"/>
+        <result column="school_id" property="schoolId"/>
+        <result column="prize_type" property="type"/>
+        <result column="dateline" property="dateline"/>
+    </resultMap>
+
+    <resultMap id="my_prize_vo" type="com.liangxunwang.unimanager.mvc.vo.PkPrizeVO">
+        <id column="prize_id" property="id"/>
+        <result column="theme_id" property="themeId"/>
+        <result column="prize_content" property="content"/>
+        <result column="prize_pic" property="pic"/>
+        <result column="school_id" property="schoolId"/>
+        <result column="prize_type" property="type"/>
+        <result column="dateline" property="dateline"/>
+        <result column="theme_number" property="themeNumber"/>
+        <result column="school_name" property="schoolName"/>
+    </resultMap>
+
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.PkPrize">
+        INSERT INTO PK_PRIZE(prize_id, THEME_ID, PRIZE_CONTENT, PRIZE_PIC, SCHOOL_ID, PRIZE_TYPE, DATELINE)
+        VALUES (#{id}, #{themeId}, #{content}, #{pic}, #{schoolId}, #{type},#{dateline})
+    </insert>
+
+    <select id="findByThemeId" parameterType="String" resultMap="my_prize">
+        SELECT * FROM PK_PRIZE WHERE THEME_ID=#{themeId} AND PRIZE_TYPE=#{type}
+    </select>
+    <select id="findBySchoolIdAndThemeId" parameterType="String" resultMap="my_prize">
+        SELECT * FROM PK_PRIZE WHERE THEME_ID=#{themeId} AND SCHOOL_ID=#{schoolId} AND PRIZE_TYPE=#{type}
+    </select>
+
+    <delete id="deleteById" parameterType="String">
+        DELETE FROM PK_PRIZE WHERE PRIZE_ID=#{id}
+    </delete>
+
+    <select id="findByEmpId" resultMap="my_prize_vo">
+
+        SELECT pp.*, pt.PK_NUMBER as theme_number, cl.NAME as school_name  FROM PK_PRIZE pp
+        LEFT JOIN PK_THEME pt on pp.THEME_ID=pt.PK_ID
+        LEFT JOIN COLLEGE cl on pp.SCHOOL_ID=cl.COID
+        LEFT JOIN CONTRACT_SCHOOL cs ON pp.SCHOOL_ID=cs.SCHOOL_ID
+        WHERE '1'='1'
+        <if test="empId != null and empId != ''">
+            AND cs.EMP_ID=#{empId}
+        </if>
+        <if test="themeId != null and themeId != ''">
+            AND pp.THEME_ID=#{themeId}
+        </if>
+        <if test="schoolId != null and schoolId != ''">
+            AND (pp.SCHOOL_ID=#{schoolId} OR pp.SCHOOL_ID='0')
+        </if>
+        ORDER BY pp.DATELINE DESC
+      limit #{index},#{size}
+    </select>
+
+</mapper>

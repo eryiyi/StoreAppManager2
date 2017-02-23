@@ -1,0 +1,124 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<permissions id="ALL" name="所有权限">
+    <group id="ROLE_MANAGE" name="角色管理">
+        <permission id="LIST_ROLE" name="角色列表"/>
+        <permission id="ADD_ROLE" name="添加角色"/>
+    </group>
+    <group id="MANA_MANAGE" name="管理员管理">
+        <permission id="LIST_MANAGER_ADMIN" name="管理员"/>
+        <permission id="LIST_MANAGER_SJ" name="商家列表"/>
+        <permission id="LIST_MANAGER_DL" name="代理列表"/>
+    </group>
+
+    <group id="EMPLOYEE_MANAGE" name="会员管理">
+        <permission id="LIST_EMPLOYEE" name="会员列表"/>
+        <permission id="LX_CARD_EMP_LIST" name="定向卡会员"/>
+    </group>
+
+    <group id="ADVERT_MANAGE" name="广告管理">
+        <permission id="ADVERT_LIST" name="广告列表"/>
+        <permission id="ADD_ADVERT_MANAGER" name="添加广告"/>
+    </group>
+
+    <group id="MANAGER_AREA" name="地区管理">
+        <permission id="AREA_LIST" name="省份列表"/>
+    </group>
+
+
+    <group id="LX_CARD_MANAGE" name="定向卡维护">
+        <permission id="LX_CARD_LIST" name="定向卡维护"/>
+    </group>
+
+    <group id="LX_XIAOFEI_MANAGE" name="消费记录">
+        <permission id="LX_XIAOFEI_LIST" name="消费记录"/>
+    </group>
+
+    <group id="LX_BANK_APPLY_MANAGER" name="提现管理">
+        <permission id="LX_BANK_APPLY_LIST" name="提现申请"/>
+        <permission id="LX_BANK_APPLY_ADD" name="申请提现"/>
+        <permission id="LX_BANK_APPLY_MINE" name="我的提现"/>
+    </group>
+
+    <group id="MARKET_CLASS" name="商城管理">
+        <permission id="LIST_CLASS" name="商城分类列表"/>
+        <permission id="ADD_CLASS" name="添加商城分类"/>
+        <permission id="GOODS_HOT_SMALL_TYPE" name="商城热门分类"/>
+        <permission id="LIST_LX_CLASS" name="入驻分类列表"/>
+        <permission id="ADD_LX_CLASS" name="添加入驻分类"/>
+    </group>
+
+    <group id="POINT_MANAGE" name="积分管理">
+    <permission id="JIFEN_LIST" name="积分列表"/>
+    <permission id="EDIT_JIFEN_GUIZE" name="积分规则"/>
+    <permission id="JIFEN_ADD_DELETE_LIST" name="积分变动记录"/>
+</group>
+    <group id="NOTICE_MANAGE" name="公告管理">
+        <permission id="NOTICE_LIST" name="公告列表"/>
+        <permission id="ADD_NOTICE_MANA_ADD" name="添加公告"/>
+    </group>
+
+    <group id="SYSTEM_MANAGE" name="店铺管理">
+        <permission id="MANAGER_INFO_LIST" name="店铺列表"/>
+        <permission id="MANAGER_INFO_WH" name="店铺信息维护"/>
+        <permission id="MANAGER_DIANPU_AD" name="店铺广告列表"/>
+        <permission id="SHANGJIA_ORDERS" name="我的订单"/>
+        <permission id="DIANPU_COMMENT" name="店铺评论"/>
+    </group>
+
+    <group id="PAOPAO_GOODS_MANAGER" name="商品管理">
+        <permission id="MINE_GOODS_LIST_SHANGCHENG" name="商城产品列表"/>
+        <permission id="MINE_GOODS_LIST_SJ" name="商家产品列表"/>
+        <permission id="MINE_GOODS_ADD_MANAGE" name="发布商品"/>
+        <permission id="MINE_GOODS_ADD_DXK" name="发布定向卡商品"/>
+        <permission id="MINE_ORDER_LIST_SHANGCHENG" name="商城订单"/>
+        <permission id="MINE_ORDER_LIST_SJ" name="商家订单"/>
+        <permission id="MINE_GOODS_COMMENTS" name="商品评论"/>
+    </group>
+
+    <group  id="XITONG_SET" name="系统设置">
+        <permission id="MODIFY_PASS" name="修改密码"/>
+    </group>
+
+    <group id="PAIHANG_MANAGE" name="商品推荐管理">
+        <permission id="PAIHANG_SHANGHU_MANAGE" name="商品推荐管理"/>
+    </group>
+
+    <group id="PAIHANG_DIANPU_SHANGHU_MANAGE" name="店铺推荐管理">
+        <permission id="PAIHANG_DIANPU_SHANGHU_MANAGE" name="店铺推荐管理"/>
+    </group>
+
+    <group id="MAANGER_VERSION_CODE_MANAGER" name="版本管理">
+        <permission id="UPDATE_VERSION_CODE_MAANGER_AD_LIST" name="版本管理"/>
+    </group>
+
+    <group id="TEL_MANAGE" name="客服管理">
+        <permission id="ADD_TEL_KEFU_MANAGE" name="添加客服"/>
+        <permission id="TEL_KEFU_MANAGE" name="客服列表"/>
+    </group>
+
+    <group id="LEVEL_MANAGER" name="等级管理">
+        <permission id="LEVEL_LIST" name="会员打折等级列表"/>
+        <permission id="LX_ATTRIBUTE_LIST" name="会员分销等级列表"/>
+        <permission id="LX_DXK_LEVEL_LIST" name="定向卡等级列表"/>
+    </group>
+
+    <group id="WELCOME_AD_MANAGER" name="欢迎页广告">
+        <permission id="WELCOME_AD" name="广告列表"/>
+    </group>
+
+    <group id="MINE_FENSI_MANAGE" name="我的粉丝">
+        <permission id="FENSI_LIST" name="粉丝管理"/>
+        <permission id="ADD_NOTICE_TO_FENSI" name="发公告"/>
+        <permission id="NOTICE_Manager_LIST" name="公告列表"/>
+    </group>
+
+    <group id="NOTICE_HOUTAI_MANAGER" name="后台帮助">
+        <permission id="ADD_NOTICE_HOUTAI" name="添加帮主"/>
+        <permission id="NOTICE_HOUTAI_LIST" name="帮助列表"/>
+    </group>
+
+    <group id="DINGXIANGKA_AD_MANAGER" name="定向卡广告管理">
+        <permission id="DXK_AD_LIST" name="广告列表"/>
+    </group>
+
+</permissions>

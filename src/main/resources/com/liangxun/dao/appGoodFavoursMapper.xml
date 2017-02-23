@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!DOCTYPE mapper PUBLIC
+        "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.liangxunwang.unimanager.dao.AppGoodsFavourDao">
+    <resultMap id="goods_favour" type="com.liangxunwang.unimanager.model.GoodsFavour">
+        <id column="favour_id" property="favour_id"/>
+        <result column="goods_id" property="goods_id"/>
+        <result column="emp_id_favour" property="emp_id_favour"/>
+        <result column="emp_id_goods" property="emp_id_goods"/>
+        <result column="dateline" property="dateline"/>
+    </resultMap>
+
+    <resultMap id="goods_favour_vo" type="com.liangxunwang.unimanager.mvc.vo.GoodsFavourVO">
+        <id column="favour_id" property="favour_id"/>
+        <result column="goods_id" property="goods_id"/>
+        <result column="emp_id_favour" property="emp_id_favour"/>
+        <result column="emp_id_goods" property="emp_id_goods"/>
+        <result column="dateline" property="dateline"/>
+
+        <result column="goods_name" property="goods_name"/>
+        <result column="goods_cover" property="goods_cover"/>
+        <result column="SELL_PRICE" property="goods_money"/>
+    </resultMap>
+
+    <insert id="save" parameterType="com.liangxunwang.unimanager.model.GoodsFavour">
+        INSERT INTO GOODS_FAVOUR (favour_id,goods_id,emp_id_favour,emp_id_goods, dateline)
+        VALUES (#{favour_id}, #{goods_id} ,#{emp_id_favour}, #{emp_id_goods} ,#{dateline})
+    </insert>
+
+    <select id="isMineFavour" resultMap="goods_favour">
+        select * from GOODS_FAVOUR
+        where goods_id=#{goods_id} AND emp_id_favour=#{emp_id_favour}
+    </select>
+
+    <select id="findList" resultMap="goods_favour_vo">
+        SELECT lf.*, lg.sell_price as goods_money, lg.GOODS_COVER as goods_cover, lg.GOODS_NAME as goods_name
+        FROM  GOODS_FAVOUR lf
+        LEFT JOIN Paopao_goods lg ON lg.GOODS_ID=lf.GOODS_ID
+        WHERE lf.EMP_ID_FAVOUR = #{empId}
+        ORDER BY lf.dateline DESC
+        limit #{index},#{size}
+    </select>
+    <update id="deleteFavourById" parameterType="String">
+        DELETE FROM GOODS_FAVOUR WHERE favour_id=#{favourId}
+    </update>
+
+
+
+</mapper>

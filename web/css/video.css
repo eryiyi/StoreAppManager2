@@ -1,0 +1,162 @@
+.container .content {
+    width: 95%;
+    margin: 0 auto;
+}
+
+.container .content .author {
+    padding: .5rem 0;
+}
+
+.container .content .author img {
+    float: left;
+    display: block;
+    height: 1.2rem;
+    border-radius: 1rem;
+}
+
+.container .content .author span {
+    padding-left: .5rem;
+    color: #969696;
+    float: left;
+    height: 1.2rem;
+    line-height: 1.2rem;
+    font-size: .8rem;
+}
+
+.container .content .title {
+    font-size: 1.3rem;
+    color: #1a1512;
+    line-height: 100%;
+    padding: .3rem 0 1rem;
+    margin-top: 1.5rem;
+}
+
+.container .content .video {
+    width: 100%;
+    margin-bottom: 1rem;
+}
+
+.container .content .article {
+    font-size: 1rem;
+    line-height: 150%;
+    margin: 1rem auto;
+}
+
+.container .content .share {
+    font-size: 1.1rem;
+    text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.2);
+    margin: 2rem auto;
+    width: 4rem;
+    height: 4rem;
+    line-height: 4rem;
+    border-radius: 2rem;
+    color: #ffffff;
+    text-align: center;
+    background-color: #569fec;
+}
+
+.container .user {
+    width: 100%;
+    padding: 1rem;
+    box-sizing: border-box;
+    background-color: #f8f8f8;
+}
+
+.container .user .head {
+    margin-right: 5%;
+    float: left;
+    width: 15%;
+}
+
+.container .user .head img {
+    display: block;
+    margin: 0 auto;
+    width: 3.5rem;
+    height: 3.5rem;
+    border-radius: 50%;
+}
+
+.container .user .info {
+    width: 80%;
+    float: right;
+}
+
+.container .user .info .name {
+    font-size: 1rem;
+    color: #1a1512;
+    margin-bottom: .3rem;
+}
+
+.container .user .info .clime {
+    font-size: .8rem;
+    color: #969696;
+    line-height: 150%;
+}
+
+.container .comment {
+    padding: 2rem 0 4rem;
+}
+
+.container .comment dt {
+    text-align: center;
+    line-height: 200%;
+}
+
+.container .comment dd {
+    padding: .5rem 1rem;
+    border-top: 1px solid #ededed;
+}
+
+.container .comment dd:last-child {
+    border-bottom: 1px solid #ededed;
+}
+
+.container .comment dd .left {
+    margin-right: 5%;
+    float: left;
+    width: 10%;
+}
+
+.container .comment dd .left .head-icon {
+    width: 100%;
+    border-radius: 100%;
+}
+
+.container .comment dd .right {
+    float: right;
+    width: 85%;
+}
+
+.container .comment dd .right .top {
+    line-height: 200%;
+    font-size: .9rem;
+    color: #969696;
+}
+
+.container .comment dd .right .top .name {
+    float: left;
+}
+
+.container .comment dd .right .top .floor {
+    float: right;
+}
+
+.container .comment dd .right .top .crap {
+    font-size: 1rem;
+    display: block;
+    line-height: 150%;
+    color: #444444;
+}
+
+.container .share-link {
+    width: 100%;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    display: block;
+}
+
+.container .share-link img {
+    width: 100%;
+    display: block;
+}
